@@ -1,0 +1,21 @@
+{% for source in sources %}
+Title: {{ source.title|safe }}
+{% if source.roleperson_set.all %}{% for roleperson in source.roleperson_set.all %}{{ roleperson.role|safe }}: {{ roleperson.person|safe }}
+{% endfor %}{% endif %}{% if source.container %}Container: {{ source.container|safe }}
+{% endif %}{% if source.series_title %}Series Title: {{ source.series_title|safe }}
+{% endif %}{% if source.series_number %}Series Number: {{ source.series_number|safe }}
+{% endif %}{% if source.volume %}Volume: {{ source.volume|safe }}
+{% endif %}{% if source.volume_number %}Volume Number: {{ source.volume_number|safe }}
+{% endif %}{% if source.issue %}Issue: {{ source.issue|safe }}
+{% endif %}{% if source.edition %}Edition: {{ source.edition|safe }}
+{% endif %}{% if source.publisher %}Publisher: {{ source.publisher|safe }}
+{% endif %}{% if source.pub_year %}Date: {{ source.pub_year.year|safe }}
+{% endif %}{% if source.pages %}Pages: {{ source.pages|safe }}
+{% endif %}{% if source.doi %}DOI: {{ source.doi|safe }}
+{% endif %}{% if source.formats.all %}Format(s): {% for format in source.formats.all %}{{ format|safe }}{% if not forloop.last %}, {% endif %}{% endfor %}
+{% endif %}{% if source.fields.all %}Genre(s): {% for field in source.fields.all %}{{ field|safe }}{% if not forloop.last %}, {% endif %}{% endfor %}
+{% endif %}{% if source.locations.all %}Location(s): {% for location in source.locations.all %}{{ location|safe }}{% if not forloop.last %}, {% endif %}{% endfor %}
+{% endif %}{% if source.periods.all %}Period(s): {% for period in source.periods.all %}{{ period|safe }}{% if not forloop.last %}, {% endif %}{% endfor %}
+{% endif %}{% if source.notes %}Notes: {{ source.notes|safe }}
+{% endif %}
+{% endfor %}

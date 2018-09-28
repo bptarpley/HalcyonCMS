@@ -1,0 +1,77 @@
+{% extends 'missiology/base.html' %}
+{% load extras %}
+
+{% block main %}
+    <div class="container">
+        <div class="row no-gutters">
+            <div class="col-12 heading whitesmoke-fore light-gray">
+                <img src="/static/missiology/img/doodad-light-gray.png" class="heading-img" style="max-height: 55px;" />
+                Resources
+            </div>
+        </div>
+
+        {% if is_admin %}
+            <div class="row">
+                <div class="col-12">
+                    <a href="/resources/create"><span class="oi oi-plus"></span> New resource</a>
+                </div>
+            </div>
+        {% endif %}
+
+        {% for resource in resources %}
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="content-block white">
+                        <div class="row no-gutters">
+                            <div class="col-sm-1">
+                                <img src="/static/missiology/img/resource-light-cream.png" class="subheading-img img-fluid">
+                            </div>
+                            <div class="col-sm-11">
+                                <span class="subheading">
+                                    {% if is_admin %}
+                                        {% if not resource.published %}
+                                            [DRAFT]
+                                        {% endif %}
+                                    {% endif %}
+                                    {{ resource.title }}
+                                    {% if is_admin %}
+                                        &nbsp;<a href="/resources/create?resource-id={{ resource.id }}"><span class="oi oi-pencil"></span></a>
+                                    {% endif %}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="row no-gutters">
+                            <div class="col-sm-1"></div>
+                            <div class="col-sm-11 text-byline light-gray-fore">
+                                &nbsp;Tags:
+                                {% for tag in resource.tags.all %}
+                                    <a href="/resources?tag-id={{ tag.id }}">{{ tag.text }}</a>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="row no-gutters">
+                            <div class="col-sm-12 text-content black-fore">
+                                {{ resource.content|safe }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+        <div class="row no-gutters">
+            <div class="col-12">
+                {% if resources.has_previous %}
+                    <a href="?page=1">&laquo; first</a>
+                    <a href="?page={{ resources.previous_page_number }}">previous</a>
+                {% endif %}
+
+                Page {{ resources.number }} of {{ resources.paginator.num_pages }}
+
+                {% if resources.has_next %}
+                    <a href="?page={{ resources.next_page_number }}">next</a>
+                    <a href="?page={{ resources.paginator.num_pages }}">last &raquo;</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

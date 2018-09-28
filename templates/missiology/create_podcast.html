@@ -1,0 +1,109 @@
+{% extends 'missiology/base.html' %}
+{% load extras %}
+
+{% block css %}
+    <link href="/static/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet">
+{% endblock %}
+
+{% block main %}
+    <div class="container">
+        <div class="content-block white">
+            <div class="subheading">
+                {% if podcast.id == 'new' %}New Podcast{% else %}Edit Podcast{% endif %}
+            </div>
+            <form id="podcast-form" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="post-id" value="{{ podcast.id }}" />
+                <div class="form-group">
+                    <input type="text" class="form-control form-control-lg" id="title-box" name="title" value="{{ podcast.title }}" placeholder="Title">
+                </div>
+                <div class="form-group">
+                    <textarea id="custom_editor" name="summary">
+                        {{ podcast.summary }}
+                    </textarea>
+                </div>
+                <div class="form-group">
+                    <input type="text" class="form-control" id="url-box" name="url"><button type="button" onclick="browse_server();">Browse</button>
+                </div>
+                <div class="form-group">
+                    <div class="row">
+                        {% if is_admin %}
+                            <div class="col-6">
+                                <label for="author-box">Author</label>
+                                <select id="author-box" name="author-id" class="form-control">
+                                    {% for author in authors %}
+                                        <option value="{{ author.id }}" {% if author.id == user.id %}selected{% endif %}>{{ author.last_name }}, {{ author.first_name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        {% else %}
+                            <input type="hidden" name="author-id" value="{{ user_id }}" />
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <input type="checkbox" id="publish-box" name="published" {% if podcast.published %}checked{% endif %}>
+                    <label for="publish-box">Publish?</label>
+                </div>
+                <div class="form-group">
+                    <label for="datetime-picker">Publication Date & Time</label>
+                    <div class="input-group date" id="datetime-picker" data-target-input="nearest">
+                        <input type="text" class="form-control datetimepicker-input" name="pub-date" data-target="#datetime-picker"/>
+                        <div class="input-group-append" data-target="#datetime-picker" data-toggle="datetimepicker">
+                            <div class="input-group-text"><span class="oi oi-calendar"></span></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <a class="btn" href="/podcast">Cancel</a>
+                    <button type="submit" class="btn btn-primary" id="save-button">Save</button>
+                    {% if podcast.id != 'new' %}
+                        <div class="float-right"><a class="btn" href="?post-id={{ podcast.id }}&delete=y"><span class="oi oi-trash"></span></a></div>
+                    {% endif %}
+                </div>
+                <input type="hidden" id="preview_url-box">
+                <input type="hidden" id="previewlink_url-box">
+                <input type="hidden" id="previewimage_url-box">
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+{% block js %}
+    <script src="/static/js/ckeditor/ckeditor.js"></script>
+    <script src="/static/js/jQuery.base64.js"></script>
+    <script src="/static/js/moment.min.js"></script>
+    <script src="/static/js/tempusdominus-bootstrap-4.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            CKEDITOR.replace('custom_editor', {
+                extraPlugins: '',
+                removeButtons: 'Styles,Maximize,About',
+                allowedContent: true
+            });
+            $('#datetime-picker').datetimepicker({
+                defaultDate: "{{ podcast.pub_date|datetimeparse }}",
+                icons: {
+                    time: 'oi oi-clock',
+                    date: 'oi oi-calendar',
+                    up: 'oi oi-caret-top',
+                    down: 'oi oi-caret-bottom',
+                    previous: 'oi oi-caret-left',
+                    next: 'oi oi-caret-right',
+                    today: 'oi oi-circle-check',
+                    clear: 'oi oi-trash',
+                    close: 'oi oi-x'
+                }
+            });
+        });
+
+        function browse_server() {
+            window.open('/admin/filebrowser/browse/?pop=1&langCode=en', 'url-box');
+            return false;
+        }
+
+        function get_file(file) {
+            alert(file);
+        }
+    </script>
+{% endblock %}

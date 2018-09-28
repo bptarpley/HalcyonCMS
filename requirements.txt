@@ -1,0 +1,5 @@
+django===2.0
+django-grappelli===2.11.1
+pillow
+django-filebrowser===3.10.1
+mutagen

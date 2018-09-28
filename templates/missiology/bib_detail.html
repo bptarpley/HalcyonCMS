@@ -1,0 +1,123 @@
+{% extends 'missiology/base.html' %}
+{% load static %}
+
+{% block main %}
+    <div class="container">
+        <div class="row bg-white">
+            <div class="col-sm" style="padding: 20px;">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">{{ source.title }}</h3>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group">
+                            {% if source.roleperson_set.all %}
+                                <li class="list-group-item">
+                                    <dl class="row">
+                                        {% for roleperson in source.roleperson_set.all %}
+                                            <dt class='col-sm-2'>{{ roleperson.role }}</dt><dd class='col-sm'>{{ roleperson.person }}</dd>
+                                        {% endfor %}
+                                    </dl>
+                                </li>
+                            {% endif %}
+                            {% if source.container or source.series_title or source.series_number or source.volume or source.volume_number or source.issue or source.edition %}
+                                <li class="list-group-item">
+                                    <dl class="row">
+                                        {% if source.container %}
+                                            <dt class='col-sm-2'>Container</dt><dd class='col-sm'>{{ source.container }}</dd>
+                                        {% endif %}
+                                        {% if source.series_title %}
+                                            <dt class='col-sm-2'>Series Title</dt><dd class='col-sm'>{{ source.series_title }}</dd>
+                                        {% endif %}
+                                        {% if source.series_number %}
+                                            <dt class='col-sm-2'>Series Number</dt><dd class='col-sm'>{{ source.series_number }}</dd>
+                                        {% endif %}
+                                        {% if source.volume %}
+                                            <dt class='col-sm-2'>Volume</dt><dd class='col-sm'>{{ source.volume }}</dd>
+                                        {% endif %}
+                                        {% if source.volume_number %}
+                                            <dt class='col-sm-2'>Volume Number</dt><dd class='col-sm'>{{ source.volume_number }}</dd>
+                                        {% endif %}
+                                        {% if source.issue %}
+                                            <dt class='col-sm-2'>Issue</dt><dd class='col-sm'>{{ source.issue }}</dd>
+                                        {% endif %}
+                                        {% if source.edition %}
+                                            <dt class='col-sm-2'>Edition</dt><dd class='col-sm'>{{ source.edition }}</dd>
+                                        {% endif %}
+                                    </dl>
+                                </li>
+                            {% endif %}
+                            {% if source.publisher or source.pub_year or source.pages or source.doi or source.formats.all %}
+                                <li class="list-group-item">
+                                    <dl class="row">
+                                        {% if source.publisher %}
+                                            <dt class='col-sm-2'>Publisher</dt><dd class='col-sm'>{{ source.publisher }}</dd>
+                                        {% endif %}
+                                        {% if source.pub_year %}
+                                            <dt class='col-sm-2'>Date</dt><dd class='col-sm'>{{ source.pub_year }}</dd>
+                                        {% endif %}
+                                        {% if source.pages %}
+                                            <dt class='col-sm-2'>Pages</dt><dd class='col-sm'>{{ source.pages }}</dd>
+                                        {% endif %}
+                                        {% if source.doi %}
+                                            <dt class='col-sm-2'>DOI</dt><dd class='col-sm'>{{ source.doi }}</dd>
+                                        {% endif %}
+                                        {% if source.formats.all %}
+                                            <dt class='col-sm-2'>Format(s)</dt>
+                                            <dd class='col-sm'>
+                                            {% for format in source.formats.all %}
+                                                {{ format }}{% if not forloop.last %}, {% endif %}
+                                            {% endfor %}
+                                            </dd>
+                                        {% endif %}
+                                    </dl>
+                                </li>
+                            {% endif %}
+                            {% if source.fields.all or source.locations.all or source.periods.all %}
+                                <li class="list-group-item">
+                                    <dl class="row">
+                                        {% if source.fields.all %}
+                                            <dt class='col-sm-2'>Genre(s)</dt>
+                                            <dd class='col-sm'>
+                                            {% for field in source.fields.all %}
+                                                {{ field }}{% if not forloop.last %}, {% endif %}
+                                            {% endfor %}
+                                            </dd>
+                                        {% endif %}
+                                        {% if source.locations.all %}
+                                            <dt class='col-sm-2'>Location(s)</dt>
+                                            <dd class='col-sm'>
+                                            {% for location in source.locations.all %}
+                                                {{ location }}{% if not forloop.last %}, {% endif %}
+                                            {% endfor %}
+                                            </dd>
+                                        {% endif %}
+                                        {% if source.periods.all %}
+                                            <dt class='col-sm-2'>Period(s)</dt>
+                                            <dd class='col-sm'>
+                                            {% for period in source.periods.all %}
+                                                {{ period }}{% if not forloop.last %}, {% endif %}
+                                            {% endfor %}
+                                            </dd>
+                                        {% endif %}
+                                    </dl>
+                                </li>
+                            {% endif %}
+                            {% if source.notes %}
+                                <li class="list-group-item">
+                                    <dl class="row">
+                                        <dt class='col-sm-2'>Notes</dt>
+                                        <dd class='col-sm'>{{ source.notes }}</dd>
+                                    </dl>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                    <div class="card-footer">
+                        <a href="/bibliography">Back to Bibliography</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

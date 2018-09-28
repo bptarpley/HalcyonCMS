@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta name="description" content="">
+        <meta name="author" content="">
+        <link rel="icon" href="/static/missiology/favicon.ico">
+
+        <title>Missiology</title>
+
+        <!-- Bootstrap core CSS -->
+        <link href="/static/css/bootstrap.css" rel="stylesheet">
+        <link href="/static/css/open-iconic-bootstrap.css" rel="stylesheet">
+
+        <!-- Custom styles for this template -->
+        <link href="/static/missiology/css/missiology.css" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Merriweather" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Roboto|Roboto+Condensed:300" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=IM+Fell+Great+Primer" rel="stylesheet">
+        {% block css %}
+        {% endblock %}
+    </head>
+
+    <body>
+        {% block modals %}{% endblock %}
+        <nav class="navbar navbar-expand-md navbar-dark fixed-top dark-gray">
+            <div class="container">
+                <a class="navbar-brand" href="/"><img src="/static/missiology/img/navbar.png" /></a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarCollapse">
+                    <ul class="navbar-nav mr-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/blog">Blog</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/podcast">Podcasts</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/bibliography">Bibliography</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/resources">Resources</a>
+                        </li>
+                    </ul>
+                    <ul class="navbar-nav ml-auto">
+                        <li class="nav-item">
+                            {% if response.fname %}
+                                <a class="nav-link" href="/accounts/register">Hello, {{ response.fname }}!</a>
+                            {% else %}
+                                <a class="nav-link" href="/accounts/login">Login</a>
+                            {% endif %}
+                        </li>
+                    </ul>
+                    <!--
+                    <form class="form-inline mt-2 mt-md-0">
+                        <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
+                        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                    </form>
+                    /-->
+                </div>
+            </div>
+        </nav>
+
+        <main role="main" class="container">
+            {% for message in response.messages %}
+                <div class="alert alert-info alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            {% endfor %}
+            {% for error in response.errors %}
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    {{ error }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            {% endfor %}
+            {% if response.success %}
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    {{ response.success }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            {% endif %}
+            {% block main %}
+            {% endblock %}
+        </main>
+
+        <!-- Bootstrap core JavaScript
+        ================================================== -->
+        <!-- Placed at the end of the document so the pages load faster -->
+        <script src="/static/js/jquery-3.2.1.min.js"></script>
+        <script src="/static/js/bootstrap.bundle.min.js"></script>
+
+        {% if is_admin %}
+            <script src="/static/js/ckeditor/ckeditor.js"></script>
+            <script src="/static/js/jQuery.base64.js"></script>
+        {% endif %}
+
+        <script type="text/javascript">
+            var page_id = {{ page_id }};
+            var csrf_token = '{{ csrf_token }}';
+            var medium_pixel_width = 768;
+            var large_pixel_width = 1100;
+
+            $(document).ready(function(){
+
+                /*
+                $(window).scroll(function(){
+                    if ($(this).scrollTop() > 200 && $(window).width() > medium_pixel_width) {
+                        $('#navbar').fadeIn(500);
+                        $('#navbar').css("display", "flex");
+                    } else if ($(window).width() > medium_pixel_width) {
+                        $('#navbar').fadeOut(500);
+                    }
+                });
+                */
+            });
+
+
+        </script>
+        <script src="/static/js/halcyon.js"></script>
+        {% block js %}
+        {% endblock %}
+    </body>
+</html>

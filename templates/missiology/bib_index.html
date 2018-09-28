@@ -1,0 +1,293 @@
+{% extends 'missiology/base.html' %}
+{% load static %}
+
+{% block css %}
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4/dt-1.10.18/datatables.min.css"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'missiology/css/bibliography.css' %}"/>
+{% endblock %}
+
+{% block modals %}
+    <div id="filter-modal" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title">Filter</h3>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                </div>
+                <div class="modal-body">
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li role="presentation" class="nav-item">
+                            <a href="#people" class="nav-link active" aria-controls="people" role="tab" data-toggle="tab">People</a>
+                        </li>
+                        <li role="presentation" class="nav-item">
+                            <a href="#roles" class="nav-link" aria-controls="roles" role="tab" data-toggle="tab">Roles</a>
+                        </li>
+                        <li role="presentation" class="nav-item">
+                            <a href="#locations" class="nav-link" aria-controls="people" role="tab" data-toggle="tab">Locations</a>
+                        </li>
+                        <li role="presentation" class="nav-item">
+                            <a href="#languages" class="nav-link" aria-controls="people" role="tab" data-toggle="tab">Languages</a>
+                        </li>
+                        <li role="presentation" class="nav-item">
+                            <a href="#fields" class="nav-link" aria-controls="fields" role="tab" data-toggle="tab">Genres</a>
+                        </li>
+                    </ul>
+
+                    <div class="tab-content bib-tab-pane">
+                        <div role="tabpanel" class="tab-pane active" id="people">
+                            <table id="people-table" style="width: 100%;">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                        <div role="tabpanel" class="tab-pane" id="roles">
+                            <table id="role-table" style="width: 100%;">
+                                <thead>
+                                    <tr>
+                                        <td>Role</td>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                        <div role="tabpanel" class="tab-pane" id="locations">
+                            <table id="location-table" style="width: 100%;">
+                                <thead>
+                                    <tr>
+                                        <th>Country</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                        <div role="tabpanel" class="tab-pane" id="languages">
+                            <table id="language-table" style="width: 100%;">
+                                <thead>
+                                    <tr>
+                                        <th>Language</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                        <div role="tabpanel" class="tab-pane" id="fields">
+                            <table id="field-table" style="width: 100%;">
+                                <thead>
+                                    <tr>
+                                        <td>Genre</td>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+{% endblock %}
+
+{% block main %}
+    <div class="container">
+        <div class="row">
+            <div class="col-12 heading whitesmoke-fore light-gray">
+                <img src="/static/missiology/img/doodad-light-gray.png" class="heading-img" style="max-height: 55px;" />
+                Bibliography
+            </div>
+        </div>
+
+        <div class="row bg-white">
+            <div class="col-lg bib-column">
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#filter-modal">
+                    Filter
+                </button> by person, role, location, language, or genre.
+                <div id="filter-panel" class="hidden">
+                    <h4 class="text-muted">Current Filters</h4>
+                    <div id="current-filters">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row bg-white">
+            <div class="col-lg bib-column-gray">
+                <table id="source-table" style="width: 100%;">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Title</th>
+                            <th>People</th>
+                            <th>Date</th>
+                            <th>Language</th>
+                            <th>Location</th>
+                            <th>Genre</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+        {% if is_admin %}
+            <div class="row bg-white">
+                <div class="col-sm-12">
+                    <a class="btn" href="/admin/bibliography/source/">Manage</a>
+                </div>
+            </div>
+        {% endif %}
+        <form id="export-form" action="/bibliography/export" method="post">
+            {% csrf_token %}
+            <input id="export-ids" type="hidden" name="ids" value="" />
+        </form>
+    </div>
+{% endblock %}
+
+{% block js %}
+    <!--<script type="text/javascript" src="https://cdn.datatables.net/v/bs-3.3.7/jq-2.2.4/dt-1.10.15/datatables.min.js"></script>-->
+    <script type="text/javascript" src="https://cdn.datatables.net/v/bs4/dt-1.10.18/datatables.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.4.0/js/dataTables.buttons.min.js"></script>
+    <script type="text/javascript">
+        var filters = [];
+        var sources_table;
+
+        $(document).ready(function() {
+            sources_table = $('#source-table').DataTable({
+                "ajax": '/bibliography/sources?format=datatables',
+                "dom": 'fBtpir',
+                "processing": true,
+                "pageLength": 50,
+                "scrollX": true,
+                "scrollCollapse": true,
+                "columnDefs": [
+                    { "targets": 0, "visible": false, "searchable": false },
+                    { "targets": 1, "width": "30%" },
+                    { "targets": 2, "width": "20%" },
+                    { "targets": 3, "width": "10%" },
+                    { "targets": 4, "width": "10%" },
+                    { "targets": 5, "width": "10%" },
+                    { "targets": 6, "width": "10%" },
+                    { "targets": 7, "visible": false, "searchable": true }
+                ],
+                "order": [[ 1, "asc" ]],
+                "buttons": [
+                    {
+                        "text": "Export",
+                        "action": function (e, dt, node, config) {
+                            if (filters.length > 0 || sources_table.search().length > 0) {
+                                var data = sources_table.column(0, {search: 'applied'}).data().toArray();
+                                var data_string = "";
+                                for (var x = 0; x < data.length; x++) {
+                                    data_string += data[x];
+                                    if (x < data.length - 1) {
+                                        data_string += ",";
+                                    }
+                                }
+                                $("#export-ids").val(data_string);
+                            } else {
+                                $("#export-ids").val("");
+                            }
+                            $("#export-form").submit();
+                        }
+                    }
+                ],
+                "pagingType": "full"
+            });
+
+            $('#people-table').DataTable({
+                "ajax": '/bibliography/people?format=datatables',
+                "dom": 'ftp',
+                "pageLength": 10,
+                "scrollX": true,
+                "scrollCollapse": true,
+                "pagingType": "full"
+            });
+
+            $('#role-table').DataTable({
+                "ajax": '/bibliography/roles?format=datatables',
+                "dom": 'ftp',
+                "pageLength": 10,
+                "scrollX": true,
+                "scrollCollapse": true,
+                "pagingType": "full"
+            });
+
+            $('#location-table').DataTable({
+                "ajax": '/bibliography/locations?format=datatables',
+                "dom": 'ftp',
+                "pageLength": 10,
+                "scrollX": true,
+                "scrollCollapse": true,
+                "pagingType": "full"
+            });
+
+            $('#language-table').DataTable({
+                "ajax": '/bibliography/languages?format=datatables',
+                "dom": 'ftp',
+                "pageLength": 10,
+                "scrollX": true,
+                "scrollCollapse": true,
+                "pagingType": "full"
+            });
+
+            $('#field-table').DataTable({
+                "ajax": '/bibliography/fields?format=datatables',
+                "dom": 'ftp',
+                "pageLength": 10,
+                "scrollX": true,
+                "scrollCollapse": true,
+                "pagingType": "full"
+            });
+
+            $('#source-table').removeClass('display').addClass('table table-striped table-bordered');
+            $('#people-table').addClass('table table-striped table-bordered');
+            $('#location-table').addClass('table table-striped table-bordered');
+            $('#language-table').addClass('table table-striped table-bordered');
+            $('#publisher-table').addClass('table table-striped table-bordered');
+            $('#field-table').addClass('table table-striped table-bordered');
+            $('#role-table').addClass('table table-striped table-bordered');
+        });
+
+        function filter(type, id, desc) {
+            var add = true;
+            for (var x = 0; x < filters.length; x ++) {
+                if (filters[x].id == id && filters[x].type == type) {
+                    add = false;
+                }
+            }
+            if (add) {
+                filters.push({'type': type, 'id': id, 'desc': desc});
+            }
+
+            $('#filter-modal').modal('hide');
+            reload_sources_table();
+        }
+
+        function unfilter(type, id) {
+            for (var x = 0; x < filters.length; x ++) {
+                if (filters[x].id == id && filters[x].type == type) {
+                    filters.splice(x, 1);
+                    reload_sources_table();
+                    break;
+                }
+            }
+        }
+
+        function reload_sources_table() {
+            var current_filters = "";
+            var source_url = "/bibliography/sources?format=datatables&filter=";
+
+            if (filters.length > 0) {
+                $('#filter-panel').removeClass('hidden');
+                for (var x = 0; x < filters.length; x++) {
+                    source_url += filters[x].type + '_' + filters[x].id + ',';
+                    current_filters += "<span id='filter-" + filters[x].type + "-" + filters[x].id + "'>" + filters[x].desc + "<a href=\"javascript: unfilter('" + filters[x].type + "', " + filters[x].id + ");\"><span class='glyphicon glyphicon-remove-circle' aria-hidden='true'> </span></a></span>";
+                }
+            } else {
+                $('#filter-panel').addClass('hidden');
+                $('#current-filters').html("");
+                source_url = source_url.replace("&filter=", "");
+            }
+
+            $('#current-filters').html(current_filters);
+            sources_table.ajax.url(source_url);
+            sources_table = sources_table.ajax.reload(null, true);
+        }
+    </script>
+{% endblock %}

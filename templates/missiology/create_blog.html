@@ -1,0 +1,98 @@
+{% extends 'missiology/base.html' %}
+{% load extras %}
+
+{% block css %}
+    <link href="/static/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet">
+{% endblock %}
+
+{% block main %}
+    <div class="container">
+        <div class="content-block white">
+            <div class="subheading">
+                {% if blog_post.id == 'new' %}New Blog Post{% else %}Edit Blog Post{% endif %}
+            </div>
+            <form id="blog-post-form" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="post-id" value="{{ blog_post.id }}" />
+                <div class="form-group">
+                    <input type="text" class="form-control form-control-lg" id="title-box" name="title" value="{{ blog_post.title }}" placeholder="Title">
+                </div>
+                <div class="form-group">
+                    <textarea id="custom_editor" name="content">
+                        {{ blog_post.content }}
+                    </textarea>
+                </div>
+                <div class="form-group">
+                    <div class="row">
+                        {% if is_admin %}
+                            <div class="col-6">
+                                <label for="author-box">Author</label>
+                                <select id="author-box" name="author-id" class="form-control">
+                                    {% for author in authors %}
+                                        <option value="{{ author.id }}" {% if blog_post.id == 'new' and author.id == user.id %}selected{% elif author.id == blog_post.user.id %}selected{% endif %}>{{ author.last_name }}, {{ author.first_name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        {% else %}
+                            <input type="hidden" name="author-id" value="{{ user_id }}" />
+                        {% endif %}
+                        <div class="{% if is_admin %}col-6{% else %}col-12{% endif %}">
+                            <label for="tag-box">Tags (comma separated)</label>
+                            <input type="text" id="tag-box" class="form-control" name="tags" value="{{ blog_post.tag_string }}" />
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <input type="checkbox" id="publish-box" name="published" {% if blog_post.published %}checked{% endif %}>
+                    <label for="publish-box">Publish?</label>
+                </div>
+                <div class="form-group">
+                    <label for="datetime-picker">Publication Date & Time</label>
+                    <div class="input-group date" id="datetime-picker" data-target-input="nearest">
+                        <input type="text" class="form-control datetimepicker-input" name="pub-date" data-target="#datetime-picker"/>
+                        <div class="input-group-append" data-target="#datetime-picker" data-toggle="datetimepicker">
+                            <div class="input-group-text"><span class="oi oi-calendar"></span></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <a class="btn" href="/blog">Cancel</a>
+                    <button type="submit" class="btn btn-primary" id="save-button">Save</button>
+                    {% if blog_post.id != 'new' %}
+                        <div class="float-right"><a class="btn" href="?post-id={{ blog_post.id }}&delete=y"><span class="oi oi-trash"></span></a></div>
+                    {% endif %}
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+{% block js %}
+    <script src="/static/js/ckeditor/ckeditor.js"></script>
+    <script src="/static/js/jQuery.base64.js"></script>
+    <script src="/static/js/moment.min.js"></script>
+    <script src="/static/js/tempusdominus-bootstrap-4.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            CKEDITOR.replace('custom_editor', {
+                extraPlugins: '',
+                removeButtons: 'Styles,Maximize,About',
+                allowedContent: true
+            });
+            $('#datetime-picker').datetimepicker({
+                defaultDate: "{{ blog_post.pub_date|datetimeparse }}",
+                icons: {
+                    time: 'oi oi-clock',
+                    date: 'oi oi-calendar',
+                    up: 'oi oi-caret-top',
+                    down: 'oi oi-caret-bottom',
+                    previous: 'oi oi-caret-left',
+                    next: 'oi oi-caret-right',
+                    today: 'oi oi-circle-check',
+                    clear: 'oi oi-trash',
+                    close: 'oi oi-x'
+                }
+            });
+        });
+    </script>
+{% endblock %}

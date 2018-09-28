@@ -1,0 +1,37 @@
+#filter-modal .nav-link {
+    font-size: 14px;
+}
+
+#source-table_wrapper th {
+    background-color: #7C1609;
+    padding: 10px;
+    color: #F5F5F5;
+}
+
+.bib-column, .bib-column-gray {
+  //*margin-left: 15px;
+  margin-right: 15px;*//
+  margin-bottom: 20px;
+  background-color: rgb(208, 232, 246);
+  padding: 20px;
+}
+
+.bib-column-gray {
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#f7f7f7),to(#eee));
+  background-image: -webkit-linear-gradient(top, #f7f7f7 0%,#eee 100%);
+  background-image: -o-linear-gradient(top, #f7f7f7 0%,#eee 100%);
+  background-image: linear-gradient(to bottom, #f7f7f7 0%,#eee 100%);
+  border: 1px solid #e5e5e5;
+}
+
+.bib-tab-pane {
+  padding: 20px;
+  background-color: white;
+  border-bottom: solid 1px #DDDDDD;
+  border-left: solid 1px #DDDDDD;
+  border-right: solid 1px #DDDDDD;
+}
+
+div.dataTables_wrapper div.dataTables_filter, div.dataTables_wrapper div.dataTables_paginate {
+  text-align: left;
+}

@@ -1,0 +1,34 @@
+{% extends 'missiology/base.html' %}
+
+{% block main %}
+    <div class="container">
+        <div class="content-block white">
+            <div class="row justify-content-md-center">
+                <div class="col-md-3">
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="subheading">Login</div>
+                        <div class="form-group">
+                            <input type="text" class="form-control" name="user" placeholder="Username">
+                        </div>
+                        <div class="form-group">
+                            <input type="password" class="form-control" name="password" placeholder="Password">
+                        </div>
+                        <div class="form-group">
+                            <button class="btn" onclick="javascript: cancel_login();">Cancel</button>
+                            <button type="submit" class="btn btn-primary">Login</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block js %}
+    <script type="javascript">
+        function cancel_login() {
+            window.location.href = '/';
+        }
+    </script>
+{% endblock %}
