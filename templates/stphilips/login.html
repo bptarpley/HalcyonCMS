@@ -1,0 +1,41 @@
+{% extends 'stphilips/base.html' %}
+
+{% block main %}
+    <main id="main-content" role="main" class="container-fluid">
+        <div class="row no-gutters stpec-header-light-blue section-header">
+            <div class="col-sm-12">
+                Login
+            </div>
+        </div>
+
+        <div class="row justify-content-md-center">
+            <div class="col-md-3">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <input type="text" class="form-control" name="user" placeholder="Username">
+                    </div>
+                    <div class="form-group">
+                        <input type="password" class="form-control" name="password" placeholder="Password">
+                    </div>
+                    <div class="form-group">
+                        <button class="btn" onclick="javascript: cancel_login();">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Login</button>
+                    </div>
+                    <hr/>
+                    <div class="form-group">
+                        Don't have an account yet? Register <a href="/accounts/register{% if next_url %}?next={{ next_url }}{% endif %}">here</a>.
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+{% endblock %}
+
+{% block js %}
+    <script type="javascript">
+        function cancel_login() {
+            window.location.href = '/';
+        }
+    </script>
+{% endblock %}

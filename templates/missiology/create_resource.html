@@ -2,25 +2,38 @@
 {% load extras %}
 
 {% block css %}
-    <link href="/static/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet">
+    <style type="text/css">
+        .ace_editor {
+            /** Setting height is also important, otherwise editor wont showup**/
+            height: 300px;
+        }
+    </style>
 {% endblock %}
 
 {% block main %}
     <div class="container">
-        <div class="content-block white">
+        <div class="content-block text-content white">
             <div class="subheading">
                 {% if resource.id == 'new' %}New Resource{% else %}Edit Resource{% endif %}
             </div>
             <form id="resource-post-form" method="post">
                 {% csrf_token %}
-                <input type="hidden" name="resource-id" value="{{ resource.id }}" />
+                <input type="hidden" id="resource-id-box" name="resource-id" value="{{ resource.id }}" />
+                <input type="hidden" id="content-box" name="content" value="" />
                 <div class="form-group">
                     <input type="text" class="form-control form-control-lg" id="title-box" name="title" value="{{ resource.title }}" placeholder="Title">
                 </div>
                 <div class="form-group">
-                    <textarea id="custom_editor" name="content">
-                        {{ resource.content }}
-                    </textarea>
+                    <input type="text" class="form-control form-control" id="nice-url-box" name="nice-url" {% if resource.nice_url %}value="{{ resource.nice_url }}"{% endif %} placeholder="Nice URL">
+                    <div id="url-exists-alert" class="alert alert-danger mt-2 d-none">This nice url already exists!</div>
+                </div>
+                <div class="form-group">
+                    <a id="editor-toggle-link" onclick="toggle_editor();"><span class="oi oi-project"></span> Edit Source</a>
+                </div>
+                <div id="editor-div" class="form-group text-content" style="border: dashed 1px #444444;">
+                    <div id="custom-editor" contentEditable="true">
+                        {{ resource.content|safe }}
+                    </div>
                 </div>
                 <div class="form-group">
                     <div class="row">
@@ -31,12 +44,20 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <input type="checkbox" id="publish-box" name="published" {% if resource.published %}checked{% endif %}>
-                    <label for="publish-box">Publish?</label>
+                    <div class="row">
+                        <div class="col-6">
+                            <input type="checkbox" id="publish-box" name="published" {% if resource.published %}checked{% endif %}>
+                            <label for="publish-box">Publish?</label>
+                        </div>
+                        <div class="col-6">
+                            <input type="checkbox" id="sticky-box" name="sticky" {% if resource.sticky %}checked{% endif %}>
+                            <label for="publish-box">Sticky?</label>
+                        </div>
+                    </div>
                 </div>
                 <div class="form-group">
                     <a class="btn" href="/resources">Cancel</a>
-                    <button type="submit" class="btn btn-primary" id="save-button">Save</button>
+                    <button type="button" class="btn btn-primary" id="save-button" onclick="save_resource();">Save</button>
                     {% if resource.id != 'new' %}
                         <div class="float-right"><a class="btn" href="?resource-id={{ resource.id }}&delete=y"><span class="oi oi-trash"></span></a></div>
                     {% endif %}
@@ -48,16 +69,95 @@
 
 {% block js %}
     <script src="/static/js/ckeditor/ckeditor.js"></script>
-    <script src="/static/js/jQuery.base64.js"></script>
-    <script src="/static/js/moment.min.js"></script>
-    <script src="/static/js/tempusdominus-bootstrap-4.min.js"></script>
+    <script src="/static/js/ace/ace.js"></script>
+    <script src="/static/js/beautify/beautify.js"></script>
+    <script src="/static/js/beautify/beautify-css.js"></script>
+    <script src="/static/js/beautify/beautify-html.js"></script>
     <script type="text/javascript">
+        var editor_type = 'wysiwyg';
+        var source_editor = null;
+        var stopped_typing;
+
+        CKEDITOR.disableAutoInline = true;
+        CKEDITOR.dtd.$removeEmpty['span'] = false;
+
         $(document).ready(function(){
-            CKEDITOR.replace('custom_editor', {
-                extraPlugins: '',
-                removeButtons: 'Styles,Maximize,About',
-                allowedContent: true
+            CKEDITOR.inline('custom-editor', {
+                extraPlugins: ''
+            });
+
+            $('#title-box').change(function() {
+                var title = $(this).val();
+                title = title.replace(/[^A-Za-z0-9_\s]/g,"");
+                title = title.replace(/\s/g, "-");
+                $('#nice-url-box').val(title);
+            });
+
+            $('#nice-url-box').on("keyup propertychange input paste", function() {
+                nice_url_changed($(this).val());
             });
         });
+
+        function toggle_editor() {
+            let editor_div = $('#editor-div');
+            let content_box = $('#content-box');
+
+            if (editor_type == 'wysiwyg') {
+                content_box.val($('#custom-editor').html());
+                editor_div.html(`
+                    <div id="source-editor"></div>
+                `);
+
+                source_editor = ace.edit("source-editor");
+                source_editor.setTheme("ace/theme/monokai");
+                source_editor.getSession().setMode("ace/mode/html");
+                source_editor.setValue(html_beautify(content_box.val()));
+                editor_type = 'source';
+                $('#editor-toggle-link').html(`<span class="oi oi-project"></span> WYSIWYG`);
+            } else {
+                content_box.val(source_editor.getValue());
+                editor_div.html(`
+                    <div id="custom-editor" contentEditable="true"></div>
+                `);
+                $('#custom-editor').html(content_box.val());
+                CKEDITOR.inline('custom-editor', {
+                    extraPlugins: ''
+                });
+                editor_type = 'wysiwyg';
+                $('#editor-toggle-link').html(`<span class="oi oi-project"></span> Edit Source`);
+            }
+        }
+
+        function nice_url_changed(url_to_check) {
+            if(stopped_typing) {
+                clearTimeout(stopped_typing);
+            }
+
+            stopped_typing = setTimeout(function() {
+                $.get('/check-nice-url', {'nice-url': url_to_check}, function(data) {
+                    if(data.exists) {
+                        if(data.ids.length === 1 && data.ids[0].toString() === $('#resource-id-box').val()) {
+                            $('#url-exists-alert').addClass('d-none');
+                            $('#save-button').removeClass('d-none');
+                        } else {
+                            $('#url-exists-alert').removeClass('d-none');
+                            $('#save-button').addClass('d-none');
+                        }
+                    } else {
+                        $('#url-exists-alert').addClass('d-none');
+                        $('#save-button').removeClass('d-none');
+                    }
+                })
+            }, 1000);
+        }
+
+        function save_resource() {
+            if (editor_type == 'wysiwyg') {
+                $('#content-box').val($.trim($('#custom-editor').html()));
+            } else {
+                $('#content-box').val($.trim(source_editor.getValue()));
+            }
+            $('#resource-post-form').submit();
+        }
     </script>
 {% endblock %}

@@ -1,15 +1,52 @@
+/* ------------------ */
+/* MAIN PAGE ELEMENTS */
+/* ------------------ */
+
+html {
+    height: 100%;
+}
+
 body {
     height: 100%;
     padding-top: 55px;
     background-color: #A9A9A9; /* darkgray */
 }
 
+/* unvisited link */
+a:link {
+    color: #7C1609;
+}
+
+/* visited link */
+a:visited {
+    color: #7C1609;
+}
+
+/* mouse over link */
+a:hover {
+    color: #7C1609;
+    opacity: .6;
+}
+
+/* permanent white link */
+a.wlink:link, a.wlink:hover, a.wlink:visited {
+    color: #F5F5F5;
+}
+
+/* --------------------- */
+/* GENERAL COLOR CLASSES */
+/* --------------------- */
+
 .dark-gray {
-    background-color: #444444;
+    background-color: #444;
+}
+
+.dark-gray a {
+    color: #F5F5F5 !important;
 }
 
 .light-gray {
-    background-color: #444;
+    background-color: #999999;
 }
 
 .dark-red {
@@ -20,6 +57,10 @@ body {
     background-color: #FFFFFF;
 }
 
+.whitesmoke {
+    background-color: #F5F5F5;
+}
+
 .black-fore {
     color: #000000;
 }
@@ -28,37 +69,138 @@ body {
     color: #999999;
 }
 
+.gray-fore {
+    color: #444;
+}
+
+.white-fore {
+    color: #fff;
+}
+
 .whitesmoke-fore {
     color: #F5F5F5;
 }
 
-.red-fore {
+.dark-red-fore {
     color: #7C1609;
 }
 
-.text-small {
-    font-family: 'Roboto Condensed', sans-serif;
-    font-size: 15px;
-    display: block;
-    line-height: 1.5;
+
+/* -------------------- */
+/* GENERAL TEXT CLASSES */
+/* -------------------- */
+
+h1 {    
+    font-size: 2rem;
+    line-height: 1.2;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    margin: 0;
 }
 
-.text-byline {
-    font-family: 'Roboto', sans-serif;
-    font-size: 16px;
-    margin-top: -4px;
+h2 {
+    font-size: 1.7rem;
+    line-height: 1.2;
+    padding-top: .8rem;
+    padding-bottom: .8rem;
+    margin: 0;
+
+}
+
+h3 {    
+    font-size: 1.5rem;
+    line-height: 1.2;
+    padding-top: .8rem;
+    padding-bottom: .8rem;
+    margin: 0;
+
+}
+
+li {
+    padding-bottom: 1rem;
+}
+
+hr {
+    border-top-width: 5px;
+    border-top-color: #A9A9A9;
+    border-top-style: solid;
+}
+
+.text-small {
+	font-family: 'Martel', sans-serif;
+    font-size: .9rem;
+    display: block;
+    line-height: 1.2;
+}
+
+.text-large {
+	font-family: 'Martel', sans-serif;
+    font-size: 1.3rem;
+    line-height: 1.2;
 }
 
 .text-content {
-    font-family: 'Roboto Condensed', sans-serif;
-    font-size: 18px;
+	font-family: 'Martel', sans-serif;
+    font-size: 1.1rem;
     line-height: 1.6;
-    margin: 15px;
-    padding-right: 15px !important;
-    text-align: justify;
+    padding: 20px !important;
+    text-align: left;
 }
 
-/* NAVBAR STUFF */
+.small-bold {
+    /*font-family: 'Roboto', sans-serif;*/
+	font-family: 'Martel', sans-serif;
+    font-size: 1rem;
+    font-weight: 900;
+}
+
+
+/* ------------------ */
+/*    HEADINGS        */
+/* ------------------ */
+
+main {
+    margin-top: 0px !important;
+}
+
+#header {
+    background-size: 700px;
+    background-image: url("/static/missiology/img/missiology.jpg");
+    background-repeat: no-repeat;
+    background-position: 50% 73px;
+    background-attachment: fixed;
+    background-color: #F5F5F5;
+    height: 160px;
+}
+
+.header-img {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.heading {
+    font-family: 'Merriweather Sans', sans-serif;
+    font-size: 32px;
+    padding-top: 8px;
+    padding-right: 8px;
+    padding-bottom: 8px;
+    padding-left: 12px;
+}
+
+.heading-img {
+    margin-left: 8px;
+}
+
+.subheading {
+    font-family: 'Merriweather Sans', sans-serif;
+    font-size: 22px;
+}
+
+
+/* ------------------ */
+/*    NAVBAR STUFF    */
+/* ------------------ */
+
 .navbar {
     padding: 0px;
     margin-bottom: 0px !important;
@@ -68,8 +210,12 @@ body {
     padding: 0px;
 }
 
+.nav-item {
+    padding-bottom: 0;
+}
+
 a.nav-link {
-    font-family: 'Merriweather', serif;
+    font-family: 'Merriweather Sans', sans-serif;
     color: #F5F5F5;
 }
 
@@ -77,20 +223,102 @@ a.nav-link {
     color: #F5F5F5;
 }
 
-main {
-    margin-top: 0px !important;
+.navbar-dark .btn-outline-success {
+    color: #7C1609;
+    border-color: #7C1609;
 }
 
-#header {
-    background-size: cover;
+.navbar-dark .btn-outline-success:hover {
+    color: #F5F5F5;
+    background-color: #7C1609;
+    border-color: #7C1609;
+}
+
+#navbarCollapse.show {
+    padding: 15px;
+}
+
+.searchbar {
+    width: 270px;
+    border: none;
+}
+
+.searchbar input {
+    width: 250px !important;
+}
+
+
+/* ------------------ */
+/*    POSTCARDS       */
+/* ------------------ */
+
+.postcard {
+    padding-left: 15px !important;
+    padding-right: 7.5px !important;
+}
+
+.postcard-solo {
+    padding-right: 15px !important;
+}
+
+.postcard-row {
+    margin-bottom: 15px !important;
+}
+
+.postcard-right {
+    padding-left: 7.5px !important;
+    padding-right: 15px !important;
+}
+
+.post-title {
+    font-family: 'Merriweather Sans', sans-serif;
+    background-color: #FFFFFF;
+    padding-left: 10px !important;
+    padding-right: 8px !important;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    font-size: 1.9rem;
+    line-height: 1.2;
+    min-height: 60px;
+    color: #7C1609;
+}
+
+.post-title a:hover {
+    color: #7C1609;
+    text-decoration: none;
+    opacity: unset;
+}
+
+.post-title .oi {
+    font-size: 20px;
+}
+
+.post-type {
+    background-color: #999999;
     background-repeat: no-repeat;
-    background-position: top center;
-    background-color: #F5F5F5;
+    background-position: center top;
+    background-size: 60px;
+    min-height: 60px;
 }
 
-.header-img {
-    margin-top: 20px;
-    margin-bottom: 20px;
+.post-type-blog {
+    background-image: url("/static/missiology/img/blog-md-header.png");
+}
+
+.post-type-resource {
+    background-image: url("/static/missiology/img/resource-md-header.png");
+}
+
+.post-type-podcast {
+    background-image: url("/static/missiology/img/podcast-md-header.png");
+}
+
+.post-type-bibliography {
+    background-image: url("/static/missiology/img/bibliography-md-header.png");
+}
+
+.post-type-page {
+    background-image: url("/static/missiology/img/page-md-header.png");
 }
 
 .img-selector {
@@ -99,83 +327,245 @@ main {
     width: 30px;
 }
 
-.heading {
-    font-family: 'IM Fell Great Primer', serif;
-    font-size: 32px;
+.admin-link {
+    font-weight: 900;
+    font-size: 20px;
+}
+
+.by-link {
+    color: #7C1609 !important;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.by-link-small {
+    color: #7C1609 !important;
+    font-size: 1rem;
+}
+
+.byline-author {
+	font-family: 'Merriweather Sans', sans-serif;
+    padding: 10px !important;
+    padding-bottom: 0px !important;
+    background-color: #F5F5F5;
+    font-size: 17px;
+    line-height: 1.4;
+}
+
+.byline-tags {
+	font-family: 'Merriweather Sans', sans-serif;
+    padding: 10px !important;
+    font-size: 17px;
+    line-height: 1.4;
+}
+
+.tag-link {
+    font-family: 'Merriweather Sans', sans-serif;
+    background-color: #F5F5F5;
     padding: 8px;
-    margin-top: 10px;
+    margin-right: 8px;
+    line-height: 3;
 }
 
-.heading-img {
-    margin-left: 8px;
+.bib-header {
+    background-color: #F5F5F5;
+    color: #444444;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    font-weight: bold;
 }
 
-.subheading {
-    font-family: 'IM Fell Great Primer', serif;
-    font-size: 27px;
+.bib-info {
+    font-size: 14px;
+    padding-top: 8px;
+    /* These are technically the same, but use both */
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+
+    -ms-word-break: break-all;
+    /* This is the dangerous one in WebKit, as it breaks things wherever */
+    word-break: break-all;
+    /* Instead use this non-standard one: */
+    word-break: break-word;
+
+    /* Adds a hyphen where the word breaks, if supported (No Blink) */
+    -ms-hyphens: auto;
+    -moz-hyphens: auto;
+    -webkit-hyphens: auto;
+    hyphens: auto;
 }
 
 .subheading-img {
-    margin-top: 4px;
-    min-width: 30px;
+    margin-right: 10px;
 }
 
 .content-block {
-    margin: 10px 0px 10px 0px;
-    padding: 20px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    min-height: 200px;
 }
 
 .content-block a {
     color: #7C1609;
 }
 
-.ad-block {
-    margin: 10px 0px 10px 10px;
+.pages {
+    font-weight: 900;
 }
 
-#filter-modal .nav-link {
-    font-size: 14px;
+.submenu {
+    
 }
 
-#source-table_wrapper th {
-    background-color: #7C1609;
-    padding: 10px;
+.submenu-item {
+    padding: 0px 0px 0px 10px !important;
+    line-height: 3;
+}
+
+.comment {
+    padding: 20px;
+    padding-top: 0px;
+    border-bottom: solid 1px #444;
+}
+
+.comment-area {
+    padding: 20px;
+}
+
+.comment-form {
+    margin-top: 15px;
+}
+
+.sidebar-row {
+    margin-left: 15px;
+}
+
+.sidebar-col {
+    padding: 10px !important;
+}
+
+.sidebar-header {
+    min-height: 71px;
+    max-height: 71px;
+    padding-left: 15px !important;
+}
+
+.sidebar-item {
+    padding-left: 10px !important;
+}
+
+.mt-15 {
+    margin-top: 15px;
+}
+
+.ml-15 {
+    margin-left: 15px;
+}
+
+.bl-15 {
+    border-left-width: 15px;
+    border-left-color: #A9A9A9;
+    border-left-style: solid;
+}
+
+.sec-layout-col {
+    border: dashed 1px #444444;
+}
+
+.footer {
+    min-height: 55px;
+}
+
+.footer a {
     color: #F5F5F5;
+    font-family: "Merriweather Sans", sans-serif;
 }
 
-.bib-column, .bib-column-gray {
-  //*margin-left: 15px;
-  margin-right: 15px;*//
-  margin-bottom: 20px;
-  background-color: rgb(208, 232, 246);
-  padding: 20px;
+/* LARGE SIZE */
+@media (max-width: 1199px) {
+
+    .heading {
+        font-size: 30px;
+    }
+
+    .subheading {
+        font-size: 20px;
+    }
+
+    .text-small {
+        font-size: 14px;
+    }
+
+    .post-type {
+        background-size: 50px;
+    }
+
+    .post-title {
+        font-size: 26px;
+    }
+
+    .text-content {
+        font-size: 16px;
+    }
 }
 
-.bib-column-gray {
-  background-image: -webkit-gradient(linear, left top, left bottom, from(#f7f7f7),to(#eee));
-  background-image: -webkit-linear-gradient(top, #f7f7f7 0%,#eee 100%);
-  background-image: -o-linear-gradient(top, #f7f7f7 0%,#eee 100%);
-  background-image: linear-gradient(to bottom, #f7f7f7 0%,#eee 100%);
-  border: 1px solid #e5e5e5;
-}
+/* MEDIUM SIZE */
+@media (max-width: 991px) {
+    #header {
+        background-image: url("/static/missiology/img/missiology-sm.jpg");
+        background-position: 50% 83px;
+        background-size: 500px;
+    }
 
-.bib-tab-pane {
-  padding: 20px;
-  background-color: white;
-  border-bottom: solid 1px #DDDDDD;
-  border-left: solid 1px #DDDDDD;
-  border-right: solid 1px #DDDDDD;
-}
+    .subheading {
+        font-size: 20px;
+    }
 
-div.dataTables_wrapper div.dataTables_filter, div.dataTables_wrapper div.dataTables_paginate {
-  text-align: left;
+    .text-small {
+        font-size: 12px;
+        line-height: 1.5;
+    }
+
+    .post-type {
+        background-size: 60px;
+    }
+
+    .postcard {
+        padding-left: 15px !important;
+        padding-right: 15px !important;
+        margin-bottom: 15px !important;
+    }
+
+    .postcard-right {
+        padding-left: 15px !important;
+        padding-right: 15px !important;
+        margin-bottom: 15px !important;
+    }
+
+    .post-title {
+        font-size: 24px;
+    }
+
+    .by-link {
+        font-size: 18px;
+    }
+
+    .by-link-small {
+        font-size: 16px;
+    }
 }
 
 /* SMALL SIZE */
-@media (max-width: 575.98px) {
+@media (max-width: 767px) {
     /* NAVBAR STUFF */
     .navbar-brand {
         margin-left: 0px;
+    }
+
+    #header {
+        background-size: 400px !important;
+        background-position: 50% 86px;
+        height: 140px;
     }
 
     .subheading {
@@ -186,23 +576,21 @@ div.dataTables_wrapper div.dataTables_filter, div.dataTables_wrapper div.dataTab
         font-size: 12px;
         line-height: 1.5;
     }
-}
 
-/* MEDIUM SIZE */
-@media (max-width: 767.98px) {
-    .subheading {
-        font-size: 20px;
+    .sidebar-row {
+        margin-left: 0px;
     }
 
-    .text-small {
-        font-size: 12px;
-        line-height: 1.5;
+    .sidebar-col {
+        padding: 10px !important;
+        padding-left: 10px !important;
     }
 }
 
-/* LARGE SIZE */
-@media (max-width: 991.98px) {
-    .subheading {
-        font-size: 23px;
+/* XTRA SMALL SIZE */
+@media (max-width: 575px) {
+    #header {
+        background-size: 300px !important;
+        background-position: 50% 90px;
     }
 }

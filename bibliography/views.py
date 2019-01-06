@@ -5,25 +5,34 @@ from django.db.models import prefetch_related_objects
 from django.utils.html import escape
 from django.conf import settings
 from django.template import loader, Context
+from django.contrib.auth.models import User
 from .models import *
+from home import SiteResponse
 
 
 def index(request):
+    res = SiteResponse(request.user)
     is_admin = False
+    can_blog = False
     if request.user.is_authenticated:
         is_admin = request.user.is_superuser
+        user = User.objects.get(id=request.user.id)
+        can_blog = user.profile.can_blog
 
     return render(
         request,
         settings.THEME_TEMPLATES['bib_index'],
         {
             'page_id': 40,
-            'is_admin': is_admin
+            'response': res,
+            'is_admin': is_admin,
+            'can_blog': can_blog
         }
     )
 
 
 def source_detail(request):
+    res = SiteResponse(request.user)
     source = None
 
     if request.method == 'GET':
@@ -34,7 +43,8 @@ def source_detail(request):
         request,
         settings.THEME_TEMPLATES['bib_detail'],
         {
-            'source': source
+            'source': source,
+            'response': res
         }
     )
 
@@ -139,8 +149,7 @@ def sources(request):
                     "<a href='/bibliography/detail?id=" + str(source.id) + "'>" + source.title + "</a>",
                     people,
                     source.pub_year,
-                    source.language.__str__(),
-                    countries,
+                    source.publisher.__str__(),
                     fields,
                     source.notes
                 ]

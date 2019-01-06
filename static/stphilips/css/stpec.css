@@ -1,0 +1,300 @@
+.stpec-header-dark-blue {
+    background-color: #A50F0F;
+    color: #FFFFFF;
+    font-family: "cronos-pro";
+    font-size: 2.2rem;
+    padding-left: 15px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+    margin-bottom: 1rem;
+}
+
+.stpec-header-light-blue {
+    background-color: #A50F0F;
+    color: #FFFFFF;
+    font-family: "cronos-pro";
+    font-size: 2.2rem;
+    padding-left: 15px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+    margin-bottom: 1rem;
+}
+
+#main-content {
+    padding-bottom: 20px;
+    margin-top: 55px;
+}
+
+.index {
+    background-image: url("/static/stphilips/img/stpec-bg.jpg");
+    background-size: auto;
+    background-attachment: scroll;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: top center;
+    background-color: #0DAAFF;
+}
+
+.resources {
+    background-image: url("/static/stphilips/img/resources.png");
+    background-size: auto;
+    background-attachment: scroll;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: top center;
+    background-color: #0DAAFF;
+}
+
+.blog {
+    background-image: url("/static/stphilips/img/altar.png");
+    background-size: auto;
+    background-attachment: scroll;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: top center;
+    background-color: #0DAAFF;
+}
+
+.post-title a, .post-title a:hover {
+    color: #283845;
+    text-decoration: none;
+}
+
+.post-byline {
+    padding-left: 8px !important;
+    padding-bottom: 1px;
+    background-color: #f8f9fa;
+    font-size: 17px;
+    margin-bottom: 10px;
+}
+
+.post-content {
+    font-size: 20px;
+    line-height: 1.4;
+}
+
+.tag-link {
+    background-color: #f8f9fa;
+    padding: 8px;
+    margin-right: 8px;
+    line-height: 3;
+    font-size: 16px;
+}
+
+#navbar {
+    background-color: #006CB5;
+    padding-bottom: 0px;
+    display: flex;
+}
+
+#navbar-menu {
+    display: inline-block;
+}
+
+.nav-link {
+    font-family: "cronos-pro";
+    font-size: 20px;
+    padding-top: 0px;
+}
+
+#header-row {
+    min-height: 120px;
+    max-height: 160px;
+}
+
+#logo-church {
+    padding-top: 75px;
+}
+
+#logo-shield {
+    max-width: 35px;
+    height: auto;
+    margin-top: 10px;
+}
+
+#logo-episcopal {
+    color: #006CB5;
+    font-family: "athelas";
+    font-size: 22px;
+    font-weight: bold;
+}
+
+#logo-address {
+    color: #FFFFFF;
+    font-style: italic;
+    font-size: 16px;
+    margin-top: -5px;
+}
+
+.header-links {
+    padding-left: 0px;
+    padding-top: 30px;
+    background:rgba(243,236,223,0.7);
+}
+
+.header-link {
+    font-family: "athelas";
+    color: #FFFFFF;
+    font-size: 25px;
+    margin-right: 20px;
+}
+
+.header-link:hover {
+    text-decoration: none;
+    color: #283845;
+}
+
+.header-left {
+    max-width: 768px;
+}
+
+.tagline {
+    font-family: "athelas";
+    color: #283845;
+    font-size: 25px;
+}
+
+.header-spacing {
+    margin-bottom: 20px;
+    margin: 20px;
+}
+
+.header-button {
+    background-color: #283845;
+    color: #FFFFFF;
+    border: solid 1px white;
+    width: 225px;
+    margin-left: auto;
+    margin-right: auto;
+    font-family: "cronos-pro";
+    font-weight: 300;
+    font-style: normal;
+    font-size: 25px;
+}
+
+.subheading {
+    font-family: "cronos-pro";
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.custom-edit {
+    background-color: #FFFFFF;
+    padding: 5px;
+    border: solid 1px black;
+}
+
+h1, h2, h3, h4 {
+    color: #283845;
+    font-family: "cronos-pro";
+}
+
+.display-3, .display-4 {
+    color: #FFFFFF;
+    font-family: "cronos-pro";
+}
+
+.display-4 {
+    font-size: 2.8rem;
+}
+
+.body-text, .section-content {
+    color: #283845;
+    font-family: "athelas";
+    font-size: 1.3rem;
+}
+
+.section-settings {
+    color: #FFFFFF;
+    font-size: 1rem;
+}
+
+.sec-layout-col {
+    border: dashed 1px #444444;
+}
+
+@media (max-width: 767px) {
+    .index {
+        background-image: none;
+        /*height: 700px;*/
+    }
+
+    #navbar {
+        display: flex;
+    }
+
+    .nav-link {
+        font-size: 15px;
+    }
+
+    .tagline {
+        font-size: 20px;
+        margin: 20px;
+    }
+
+    .header-button {
+        font-size: 20px;
+        width: 190px;
+    }
+}
+
+@media (min-width: 768px) {
+    #navbar {
+        display: flex;
+    }
+
+    .nav-link {
+        font-size: 20px;
+    }
+
+    .header-links {
+        padding-top: 15px;
+    }
+
+    .header-link {
+        font-size: 20px;
+    }
+
+    .tagline {
+        font-size: 20px;
+    }
+
+    .header-button {
+        font-size: 20px;
+        width: 180px;
+    }
+
+    .sec-layout-row-header {
+        background-color: #E8E8E8;
+    }
+
+    .sec-layout-col {
+        background-color: #B0B0B0;
+        border: solid 1px #606060;
+    }
+}
+
+/*
+@media (min-width: 1100px) {
+    #main-content {
+        background-image: url("/static/img/stpec-bg.png");
+    }
+
+    .header-links {
+        padding-top: 30px;
+    }
+
+    .header-link {
+        font-size: 25px;
+    }
+
+    .tagline {
+        font-size: 25px;
+    }
+
+    .header-button {
+        font-size: 25px;
+        width: 225px;
+    }
+}
+*/

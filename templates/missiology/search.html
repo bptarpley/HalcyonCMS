@@ -1,0 +1,46 @@
+{% extends 'missiology/base.html' %}
+{% load extras %}
+
+{% block main %}
+    <div class="row no-gutters">
+        <div class="col-sm-12">
+            <div class="row no-gutters mt-0">
+                <div class="col-sm-12 heading whitesmoke-fore dark-red">
+                    <img src="/static/missiology/img/doodad-light-gray.png" class="heading-img" style="max-height: 55px;" />
+                    Search
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% for result in results %}
+        <div class="row mt-15">
+            <div class="d-flex flex-column col-sm-12 postcard postcard-solo">
+                <div class="row no-gutters">
+                    <div class="post-type post-type-{{ result.type }} col-md-2">
+                        &nbsp;
+                    </div>
+                    <div class="col-sm-12 col-md-10 post-title" style="background-color: #F5F5F5;">
+                        <a href="{{ result.url }}">{{ result.title }}</a>
+                    </div>
+                </div>
+                <div class="row no-gutters">
+                    <div class="col-sm-12 content-block white text-content black-fore">
+                        {{ result.context|safe|truncatewords_html:100 }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+
+{% endblock %}
+
+{% block js %}
+    {% if response.is_admin %}
+        <script src="/static/js/ckeditor/ckeditor.js"></script>
+        <script src="/static/js/jQuery.base64.js"></script>
+        <script src="/static/js/ace/ace.js"></script>
+        <script type="javascript">
+        </script>
+    {% endif %}
+{% endblock %}

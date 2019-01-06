@@ -2,7 +2,7 @@
 
 {% block main %}
     <div class="container">
-        <div class="content-block white">
+        <div class="content-block text-content white">
             <div class="row justify-content-md-center">
                 <div class="col-md-3">
                     <form method="post">
@@ -17,6 +17,10 @@
                         <div class="form-group">
                             <button class="btn" onclick="javascript: cancel_login();">Cancel</button>
                             <button type="submit" class="btn btn-primary">Login</button>
+                        </div>
+                        <hr/>
+                        <div class="form-group">
+                            Don't have an account yet? Register <a href="/accounts/register{% if next_url %}?next={{ next_url }}{% endif %}">here</a>.
                         </div>
                     </form>
                 </div>

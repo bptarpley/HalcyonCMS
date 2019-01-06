@@ -2,7 +2,7 @@
 
 {% block main %}
     <div class="container">
-        <div class="content-block white">
+        <div class="content-block text-content white">
             <form method="post">
                 {% csrf_token %}
                 <div class="subheading">
@@ -60,7 +60,9 @@
                 <div class="form-group">
                     <a class="btn" href="/">Cancel</a>
                     <button type="submit" class="btn btn-primary">{% if user.id == 'new' %}Register{% else %}Save{% endif %}</button>
-                    <div class="float-right"><a class="btn btn-outline-dark" href="?logout=y">Log out</a></div>
+                    {% if user.id != 'new' %}
+                        <div class="float-right"><a class="btn btn-outline-dark" href="?logout=y">Log out</a></div>
+                    {% endif %}
                 </div>
             </form>
         </div>

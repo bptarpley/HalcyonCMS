@@ -1,0 +1,109 @@
+{% extends 'stphilips/base.html' %}
+{% load extras %}
+
+{% block main %}
+    <main id="main-content" role="main" class="container-fluid blog">
+        <div class="row no-gutters">
+            <div class="col-12" style="height: 300px;">
+                &nbsp;
+            </div>
+        </div>
+    </main>
+
+    <div class="row no-gutters stpec-header-light-blue section-header">
+        <div class="col-sm-12">
+            Blog
+            {% if is_admin or can_blog %}
+                <div class="float-right" style="margin-right: 10px;">
+                    <a href="/blog/create" class="btn btn-light">New Post</a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-10">
+                {% for post in posts %}
+                    <div class="row">
+                        <div class="col-sm-12 section-content">
+                            <!-- TITLE -->
+                            <h2 class="post-title">
+                                <a href="/blog/{{ post.nice_url }}">{{ post.title }}</a>
+                                {% if is_admin or can_blog %}
+                                    {% if not post.published %}
+                                        [DRAFT]
+                                    {% endif %}
+                                    &nbsp;<a href="/blog/create?post-id={{ post.id }}"><span class="oi oi-pencil"></span></a>
+                                {% endif %}
+                            </h2>
+
+                            <!-- BYLINE -->
+                            <div class="row no-gutters">
+                                <div class="col-sm-12 post-byline">
+                                    Posted by <a href="#">{{ post.user.get_full_name }}</a> at <a href="#">{{ post.pub_date|datetimeparse }}</a>
+                                    &nbsp;Tags:
+                                    {% for tag in post.tags.all %}
+                                        <a href="/blog?tag-id={{ tag.id }}">{{ tag.text }}</a>
+                                    {% endfor %}
+                                </div>
+                            </div>
+
+                            <!-- CONTENT -->
+                            <div class="row no-gutters">
+                                <div class="col-sm-12 post-content">
+                                    {{ post.content|safe|truncatewords_html:100 }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="col-md-2">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <h2>Tags</h2>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12 section-content">
+                        {% if tag_id %}
+                            <a class="tag-link rounded" href="/blog">All</a>
+                        {% endif %}
+                        {% for tag in tags %}
+                            <a class="tag-link rounded" href="/blog?tag-id={{ tag.id }}">{{ tag.text }}</a>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row no-gutters">
+            <div class="col-12">
+                <span class="pages">
+                {% if paginator.has_previous %}
+                    {% if tag_id %}
+                        <a href="?page=1&tag-id={{ tag_id }}">&laquo; first</a>
+                        <a href="?page={{ paginator.previous_page_number }}&tag-id={{ tag_id }}">previous</a>
+                    {% else %}
+                        <a href="?page=1">&laquo; first</a>
+                        <a href="?page={{ paginator.previous_page_number }}">previous</a>
+                    {%  endif %}
+                {% endif %}
+
+                Page {{ paginator.number }} of {{ paginator.num_pages }}
+
+                {% if paginator.has_next %}
+                    {% if tag_id %}
+                        <a href="?page={{ paginator.next_page_number }}&tag-id={{ tag_id }}">next</a>
+                        <a href="?page={{ paginator.num_pages }}&tag-id={{ tag_id }}">last &raquo;</a>
+                    {% else %}
+                        <a href="?page={{ paginator.next_page_number }}">next</a>
+                        <a href="?page={{ paginator.num_pages }}">last &raquo;</a>
+                    {% endif %}
+                {% endif %}
+                </span>
+            </div>
+        </div>
+    </div>
+{% endblock %}

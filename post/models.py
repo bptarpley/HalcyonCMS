@@ -1,7 +1,100 @@
 from __future__ import unicode_literals
 from django.db import models
 from django.contrib.auth.models import User
-import json
+from django.conf import settings
+from home import _get_model_query
+from django.utils.html import strip_tags
+import re
+
+
+def search_blog(query):
+    search_results = []
+    search_terms, model_query = _get_model_query(query, ['title', 'content'])
+
+    posts = BlogEntry.objects.filter(published=True).filter(model_query)
+    for post in posts:
+        context = ""
+        full_text = strip_tags(post.content)
+
+        for term in search_terms:
+            replacer = re.compile(re.escape(term), re.IGNORECASE)
+            full_text = replacer.sub("<b>{0}</b>".format(term), full_text)
+
+        for match in re.finditer("<b>", full_text):
+            start = match.start() - settings.SEARCH_CONTEXT_SIZE
+            if start < 0:
+                start = 0
+            end = match.start() + settings.SEARCH_CONTEXT_SIZE
+            context += full_text[start:end] + "</b> "
+
+        search_results.append({
+            'type': 'blog',
+            'title': post.title,
+            'url': '/blog/' + post.nice_url,
+            'context': context
+        })
+
+    return search_results
+
+
+def search_resources(query):
+    search_results = []
+    search_terms, model_query = _get_model_query(query, ['title', 'content'])
+
+    resources = Resource.objects.filter(published=True).filter(model_query)
+    for resource in resources:
+        context = ""
+        full_text = strip_tags(resource.content)
+
+        for term in search_terms:
+            replacer = re.compile(re.escape(term), re.IGNORECASE)
+            full_text = replacer.sub("<b>{0}</b>".format(term), full_text)
+
+        for match in re.finditer("<b>", full_text):
+            start = match.start() - settings.SEARCH_CONTEXT_SIZE
+            if start < 0:
+                start = 0
+            end = match.start() + settings.SEARCH_CONTEXT_SIZE
+            context += full_text[start:end] + "</b> "
+
+        search_results.append({
+            'type': 'resource',
+            'title': resource.title,
+            'url': '/resources/' + resource.nice_url,
+            'context': context
+        })
+
+    return search_results
+
+
+def search_podcasts(query):
+    search_results = []
+    search_terms, model_query = _get_model_query(query, ['title', 'summary'])
+
+    podcasts = PodCast.objects.filter(published=True).filter(model_query)
+    for cast in podcasts:
+        context = ""
+        full_text = strip_tags(cast.summary)
+
+        for term in search_terms:
+            replacer = re.compile(re.escape(term), re.IGNORECASE)
+            full_text = replacer.sub("<b>{0}</b>".format(term), full_text)
+
+        for match in re.finditer("<b>", full_text):
+            start = match.start() - settings.SEARCH_CONTEXT_SIZE
+            if start < 0:
+                start = 0
+            end = match.start() + settings.SEARCH_CONTEXT_SIZE
+            context += full_text[start:end] + "</b> "
+
+        search_results.append({
+            'type': 'resource',
+            'title': cast.title,
+            'url': '/podcast/' + cast.nice_url,
+            'context': context
+        })
+
+    return search_results
 
 
 class Tag(models.Model):
@@ -11,11 +104,25 @@ class Tag(models.Model):
         return self.text
 
 
+class Rating(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    score = models.IntegerField()
+
+
+class Comment(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    text = models.TextField()
+    pub_date = models.DateTimeField(auto_now_add=True)
+
+
 class Post(models.Model):
     title = models.CharField(max_length=255, default='New Post')
+    nice_url = models.CharField(max_length=255, blank=True, null=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     tags = models.ManyToManyField(Tag)
+    comments = models.ManyToManyField(Comment, blank=True)
     pub_date = models.DateTimeField(auto_now_add=True)
+    sticky = models.BooleanField(default=False)
 
     def set_tags(self, comma_delimited_tags):
         tag_strings = comma_delimited_tags.split(',')
@@ -97,3 +204,4 @@ class PodCast(Post):
 class Resource(Post):
     content = models.TextField(default='Lorem ipsum')
     published = models.BooleanField(default=False)
+    ratings = models.ManyToManyField(Rating)

@@ -2,75 +2,104 @@
 {% load extras %}
 
 {% block main %}
-    <div class="container">
+    <div style="padding-left: 0; padding-right: 0;" class="container">
         <div class="row no-gutters">
-            <div class="col-12 heading whitesmoke-fore light-gray">
+            <div class="col-12 heading whitesmoke-fore dark-red">
                 <img src="/static/missiology/img/doodad-light-gray.png" class="heading-img" style="max-height: 55px;" />
                 Resources
+                {% if is_admin or can_blog %}
+                    <div class="float-right" style="margin-right: 10px;">
+                        <a href="/resources/create" class="btn btn-light">New Resource</a>
+                    </div>
+                {% endif %}
             </div>
         </div>
 
-        {% if is_admin %}
-            <div class="row">
-                <div class="col-12">
-                    <a href="/resources/create"><span class="oi oi-plus"></span> New resource</a>
-                </div>
-            </div>
-        {% endif %}
-
-        {% for resource in resources %}
-            <div class="row">
-                <div class="col-sm-12">
-                    <div class="content-block white">
-                        <div class="row no-gutters">
-                            <div class="col-sm-1">
-                                <img src="/static/missiology/img/resource-light-cream.png" class="subheading-img img-fluid">
-                            </div>
-                            <div class="col-sm-11">
-                                <span class="subheading">
-                                    {% if is_admin %}
+        <div class="row no-gutters mt-15">
+            <div class="col-sm-12 col-md-9">
+                <div class="row postcard-row">
+                    {% for resource in resources %}
+                        <div class="d-flex flex-column col-sm-12 col-lg-6 postcard {% if forloop.counter|divisibleby:"2" %}postcard-right{% endif %}">
+                            <div class="row no-gutters">
+                                <div class="post-type post-type-resource col-md-2">
+                                    &nbsp;
+                                </div>
+                                <div class="col-sm-12 col-md-10 post-title">
+                                    {% if is_admin or can_blog %}
                                         {% if not resource.published %}
                                             [DRAFT]
                                         {% endif %}
                                     {% endif %}
-                                    {{ resource.title }}
-                                    {% if is_admin %}
-                                        &nbsp;<a href="/resources/create?resource-id={{ resource.id }}"><span class="oi oi-pencil"></span></a>
+                                    <a href="/resources/{{ resource.nice_url }}">{{ resource.title }}</a>
+                                    {% if is_admin or can_blog %}
+                                        &nbsp;<a href="/resources/create?resource-id={{ resource.id }}&page={{ paginator.number }}"><span class="oi oi-pencil"></span></a>
                                     {% endif %}
-                                </span>
+                                </div>
+                            </div>
+                            <div class="row no-gutters">
+                                <div class="col-sm-12 byline-tags whitesmoke">
+                                    Categories:
+                                    {% for tag in resource.tags.all %}
+                                        <a class="by-link-small" href="/resources?tag-id={{ tag.id }}">{{ tag.text }}</a>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <div class="row no-gutters flex-grow-1">
+                                <div class="content-block text-content white black-fore col-sm-12">
+                                    {{ resource.content|safe|truncatewords_html:50 }}
+                                </div>
                             </div>
                         </div>
-                        <div class="row no-gutters">
-                            <div class="col-sm-1"></div>
-                            <div class="col-sm-11 text-byline light-gray-fore">
-                                &nbsp;Tags:
-                                {% for tag in resource.tags.all %}
-                                    <a href="/resources?tag-id={{ tag.id }}">{{ tag.text }}</a>
-                                {% endfor %}
-                            </div>
-                        </div>
-                        <div class="row no-gutters">
-                            <div class="col-sm-12 text-content black-fore">
-                                {{ resource.content|safe }}
-                            </div>
-                        </div>
+                        {% if forloop.counter|divisibleby:"2" and not forloop.last %}
+                            </div><div class="row postcard-row">
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="col-sm-12 col-md-3">
+                <div class="row no-gutters sidebar-row">
+                    <div class="col-sm-12 sidebar-col sidebar-header heading dark-gray whitesmoke-fore">
+                        Categories
+                    </div>
+                </div>
+                <div class="row no-gutters sidebar-row">
+                    <div class="col-sm-12 sidebar-col submenu white">
+                        {% if tag_id %}
+                            <a class="tag-link rounded" href="/resources">All</a></li>
+                        {% endif %}
+                        {% for tag in tags %}
+                            <a class="tag-link rounded" href="/resources?tag-id={{ tag.id }}">{{ tag.text }}</a>
+                        {% endfor %}
                     </div>
                 </div>
             </div>
-        {% endfor %}
+        </div>
+
         <div class="row no-gutters">
             <div class="col-12">
-                {% if resources.has_previous %}
-                    <a href="?page=1">&laquo; first</a>
-                    <a href="?page={{ resources.previous_page_number }}">previous</a>
+                <span class="pages">
+                {% if paginator.has_previous %}
+                    {% if tag_id %}
+                        <a href="?page=1&tag-id={{ tag_id }}">&laquo; first</a>
+                        <a href="?page={{ paginator.previous_page_number }}&tag-id={{ tag_id }}">previous</a>
+                    {% else %}
+                        <a href="?page=1">&laquo; first</a>
+                        <a href="?page={{ paginator.previous_page_number }}">previous</a>
+                    {%  endif %}
                 {% endif %}
 
-                Page {{ resources.number }} of {{ resources.paginator.num_pages }}
+                Page {{ paginator.number }} of {{ paginator.num_pages }}
 
-                {% if resources.has_next %}
-                    <a href="?page={{ resources.next_page_number }}">next</a>
-                    <a href="?page={{ resources.paginator.num_pages }}">last &raquo;</a>
+                {% if paginator.has_next %}
+                    {% if tag_id %}
+                        <a href="?page={{ paginator.next_page_number }}&tag-id={{ tag_id }}">next</a>
+                        <a href="?page={{ paginator.num_pages }}&tag-id={{ tag_id }}">last &raquo;</a>
+                    {% else %}
+                        <a href="?page={{ paginator.next_page_number }}">next</a>
+                        <a href="?page={{ paginator.num_pages }}">last &raquo;</a>
+                    {% endif %}
                 {% endif %}
+                </span>
             </div>
         </div>
     </div>

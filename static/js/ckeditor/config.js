@@ -14,6 +14,7 @@ CKEDITOR.editorConfig = function( config ) {
 
 	// The toolbar groups arrangement, optimized for two toolbar rows.
 
+	/*
 	config.toolbarGroups = [
 		{ name: 'document', groups: [ 'mode', 'document', 'doctools' ] },
 		{ name: 'undo', groups: [ 'undo' ] },
@@ -27,8 +28,19 @@ CKEDITOR.editorConfig = function( config ) {
 		{ name: 'colors', groups: [ 'colors' ] },
 		{ name: 'about', groups: [ 'about' ] }
 	];
+	*/
 
-	config.removeButtons = 'Underline,Subscript,Superscript,Styles,Maximize,Source,About';
+	config.toolbar = [
+		{ name: 'document', items: [ 'Inlinesave' ] },
+		{ name: 'basicstyles', items: [ 'Bold', 'Italic', 'Underline' ] },
+		{ name: 'undo', items: [ 'Undo', 'Redo' ] },
+		{ name: 'links', items: [ 'Link', 'Unlink', 'Anchor' ] },
+		{ name: 'insert', items: [ 'Image', 'Table', 'HorizontalRule', 'SpecialChar' ] },
+		{ name: 'paragraph', items: [ 'NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote' ] },
+		{ name: 'styles', items: [ 'Format' ] }
+	];
+
+	config.removeButtons = 'Subscript,Superscript,Styles,Maximize,Source,About';
 
 	// Set the most common block elements.
 	config.format_tags = 'p;h1;h2;h3;pre';
@@ -53,4 +65,23 @@ CKEDITOR.editorConfig = function( config ) {
 
 	config.stylesSet = [];
 	config.filebrowserBrowseUrl = '/admin/filebrowser/browse?pop=3';
+
+	config.allowedContent = true;
 };
+
+// Make the default target for links = _blank
+CKEDITOR.on( 'dialogDefinition', function( ev ) {
+    // Take the dialog name and its definition from the event data.
+    var dialogName = ev.data.name;
+    var dialogDefinition = ev.data.definition;
+
+    // Check if the definition is from the dialog window you are interested in (the "Link" dialog window).
+    if ( dialogName == 'link' ) {
+        // Get a reference to the "Link Info" tab.
+        var targetTab = dialogDefinition.getContents( 'target' );
+
+        // Set the default value for the URL field.
+        var targetField = targetTab.get( 'linkTargetType' );
+        targetField[ 'default' ] = '_blank';
+    }
+});

@@ -10,15 +10,22 @@
         <title>Missiology</title>
 
         <!-- Bootstrap core CSS -->
-        <link href="/static/css/bootstrap.css" rel="stylesheet">
-        <link href="/static/css/open-iconic-bootstrap.css" rel="stylesheet">
+        <link href="/static/missiology/css/bootstrap.min.css" rel="stylesheet">
+        <link href="/static/missiology/css/open-iconic-bootstrap.css" rel="stylesheet">
 
         <!-- Custom styles for this template -->
         <link href="/static/missiology/css/missiology.css" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css?family=Merriweather" rel="stylesheet">
-        <link href="https://fonts.googleapis.com/css?family=Roboto|Roboto+Condensed:300" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Merriweather+Sans" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Martel" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css?family=IM+Fell+Great+Primer" rel="stylesheet">
         {% block css %}
+        {% endblock %}
+
+        {% block headjs %}
+        {% endblock %}
+
+        {% block headmeta %}
         {% endblock %}
     </head>
 
@@ -26,12 +33,15 @@
         {% block modals %}{% endblock %}
         <nav class="navbar navbar-expand-md navbar-dark fixed-top dark-gray">
             <div class="container">
-                <a class="navbar-brand" href="/"><img src="/static/missiology/img/navbar.png" /></a>
+                <a class="navbar-brand" href="/"><img src="/static/missiology/img/navbar.png" style="height: 55px;" /></a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarCollapse">
                     <ul class="navbar-nav mr-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/about">About</a>
+                        </li>
                         <li class="nav-item">
                             <a class="nav-link" href="/blog">Blog</a>
                         </li>
@@ -44,8 +54,19 @@
                         <li class="nav-item">
                             <a class="nav-link" href="/resources">Resources</a>
                         </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="searchdrop" data-toggle="dropdown">
+                                Search
+                            </a>
+                            <div class="dropdown-menu dark-gray searchbar">
+                                <form class="form-inline mx-auto" method="get" action="/search">
+                                    <input class="form-control mx-auto" type="text" placeholder="Search" name="q" aria-label="Search">
+                                    <!--<button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>-->
+                                </form>
+                            </div>
+                        </li>
                     </ul>
-                    <ul class="navbar-nav ml-auto">
+                    <ul class="navbar-nav ml-auto d-none d-lg-block">
                         <li class="nav-item">
                             {% if response.fname %}
                                 <a class="nav-link" href="/accounts/register">Hello, {{ response.fname }}!</a>
@@ -54,58 +75,74 @@
                             {% endif %}
                         </li>
                     </ul>
-                    <!--
-                    <form class="form-inline mt-2 mt-md-0">
-                        <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
-                        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-                    </form>
-                    /-->
+                    <ul class="navbar-nav ml-auto d-md-block d-lg-none">
+                        <li class="nav-item">
+                            {% if response.fname %}
+                                <a class="nav-link" href="/accounts/register"><img src="/static/missiology/img/profile.png" /></a>
+                            {% else %}
+                                <a class="nav-link" href="/accounts/login"><img src="/static/missiology/img/profile.png" /></a>
+                            {% endif %}
+                        </li>
+                    </ul>
                 </div>
             </div>
         </nav>
 
-        <main role="main" class="container">
-            {% for message in response.messages %}
-                <div class="alert alert-info alert-dismissible fade show" role="alert">
-                    {{ message }}
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-            {% endfor %}
-            {% for error in response.errors %}
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    {{ error }}
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-            {% endfor %}
-            {% if response.success %}
-                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    {{ response.success }}
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-            {% endif %}
-            {% block main %}
-            {% endblock %}
-        </main>
+        <div class="d-flex flex-column h-100">
+            <main role="main" class="container flex-grow-1">
+                {% for message in response.messages %}
+                    <div class="alert alert-info alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                {% endfor %}
+                {% for error in response.errors %}
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        {{ error }}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                {% endfor %}
+                {% if response.success %}
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        {{ response.success }}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                {% endif %}
 
-        <!-- Bootstrap core JavaScript
-        ================================================== -->
-        <!-- Placed at the end of the document so the pages load faster -->
+                {% block main %}
+                {% endblock %}
+            </main>
+
+            <div class="container-fluid dark-gray w-100 p-0 mt-15">
+                <div class="container dark-gray whitesmoke-fore footer">
+                    <div class="row no-gutters" style="padding: 15px;">
+                        <div class="col-md-4">
+                            <h5>Partner Sites</h5>
+                            <a href="missiodeijournal.com" target="_blank">Missio Dei Journal</a>
+                        </div>
+                        <div class="col-md-4">
+                            <h5>Contact</h5>
+                            <a href="mailto:contact@missiology.com">contact@missiology.com</a>
+                        </div>
+                        <div class="col-md-4">
+                            &copy; {% now "Y" %} Missio Dei Foundation
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <script src="/static/js/jquery-3.2.1.min.js"></script>
         <script src="/static/js/bootstrap.bundle.min.js"></script>
 
-        {% if is_admin %}
-            <script src="/static/js/ckeditor/ckeditor.js"></script>
-            <script src="/static/js/jQuery.base64.js"></script>
-        {% endif %}
-
         <script type="text/javascript">
-            var page_id = {{ page_id }};
+            var page_id = {% if page %}{{ page.id }}{% else %}0{% endif %};
             var csrf_token = '{{ csrf_token }}';
             var medium_pixel_width = 768;
             var large_pixel_width = 1100;

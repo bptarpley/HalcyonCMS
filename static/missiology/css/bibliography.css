@@ -1,19 +1,43 @@
+#filter-modal {
+    font-family: "Merriweather Sans", sans-serif;
+}
+
 #filter-modal .nav-link {
     font-size: 14px;
+    color: #444444 !important;
 }
 
 #source-table_wrapper th {
+    font-family: "Merriweather Sans", sans-serif;
     background-color: #7C1609;
     padding: 10px;
     color: #F5F5F5;
+}
+
+#source-table_wrapper {
+    font-family: "Martel", serif;
 }
 
 .bib-column, .bib-column-gray {
   //*margin-left: 15px;
   margin-right: 15px;*//
   margin-bottom: 20px;
-  background-color: rgb(208, 232, 246);
-  padding: 20px;
+    
+    margin: 0px;
+    padding: 20px !important;
+}
+
+.filter-panel {
+    padding: 20px !important;
+    font-family: "Merriweather Sans", sans-serif;
+    color: #F5F5F5;
+}
+
+.filter-btn {
+    font-family: 'Merriweather Sans', sans-serif;
+    color: #fff;
+    background-color: #444;
+    border-color: #444;
 }
 
 .bib-column-gray {

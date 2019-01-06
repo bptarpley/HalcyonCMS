@@ -1,1 +1,5 @@
 settings.py
+.idea
+*.pyc
+static/js/ckeditor_dev
+scripts

@@ -1,0 +1,75 @@
+{% extends 'stphilips/base.html' %}
+
+{% block main %}
+    <main id="main-content" class="container">
+        <div class="content-block text-content white">
+            <form method="post">
+                {% csrf_token %}
+                <div class="row no-gutters stpec-header-light-blue section-header">
+                    <div class="col-sm-12">
+                        {% if user.id == 'new' %}
+                            Register
+                        {% else %}
+                            Edit Profile
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="container">
+                    <div class="form-group">
+                        <input type="text" class="form-control" name="user" placeholder="Username" {% if user.username %}value="{{ user.username }}"{% endif %}>
+                    </div>
+                    <div class="form-group">
+                        <input type="password" id="password1-box" class="form-control" name="password" placeholder="{% if user.id == 'new' %}Password{% else %}New password{% endif %}">
+                    </div>
+                    {% if user.id == 'new' %}
+                        <div class="form-group">
+                            <input type="password" id="password2-box" class="form-control" name="password2" placeholder="Confirm password">
+                        </div>
+                    {% endif %}
+                    <div class="form-group">
+                        <input type="text" class="form-control" name="email" placeholder="Email" {% if user.email %}value="{{ user.email }}"{% endif %}>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" class="form-control" name="fname" placeholder="First name" {% if user.first_name %}value="{{ user.first_name }}"{% endif %}>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" class="form-control" name="lname" placeholder="Last name" {% if user.last_name %}value="{{ user.last_name }}"{% endif %}>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" class="form-control" name="website" placeholder="Website" {% if user.profile.website %}value="{{ user.profile.website }}"{% endif %}>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-3">
+                                <input id="subscribe-box" type="checkbox" name="subscribe" {% if user.profile.subscribe_newsletter %}checked{% endif %}>
+                                <label for="subscribe-box">Newsletter?</label>
+                            </div>
+                            {% if is_admin %}
+                                <div class="col-3">
+                                    <input id="is-admin-box" type="checkbox" name="is-admin" {% if user.is_superuser %}checked{% endif %}>
+                                    <label for="is-admin-box">Is admin?</label>
+                                </div>
+                                <div class="col-3">
+                                    <input id="can-blog-box" type="checkbox" name="can-blog" {% if user.profile.can_blog %}checked{% endif %}>
+                                    <label for="can-blog-box">Can blog?</label>
+                                </div>
+                                <div class="col-3">
+                                    <input id="can-cast-box" type="checkbox" name="can-cast" {% if user.profile.can_cast %}checked{% endif %}>
+                                    <label for="can-cast-box">Can podcast?</label>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <a class="btn" href="/">Cancel</a>
+                        <button type="submit" class="btn btn-primary">{% if user.id == 'new' %}Register{% else %}Save{% endif %}</button>
+                        {% if user.id != 'new' %}
+                            <div class="float-right"><a class="btn btn-outline-dark" href="?logout=y">Log out</a></div>
+                        {% endif %}
+                    </div>
+                </div>
+            </form>
+        </div>
+    </main>
+{% endblock %}

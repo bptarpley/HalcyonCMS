@@ -23,10 +23,7 @@
                             <a href="#roles" class="nav-link" aria-controls="roles" role="tab" data-toggle="tab">Roles</a>
                         </li>
                         <li role="presentation" class="nav-item">
-                            <a href="#locations" class="nav-link" aria-controls="people" role="tab" data-toggle="tab">Locations</a>
-                        </li>
-                        <li role="presentation" class="nav-item">
-                            <a href="#languages" class="nav-link" aria-controls="people" role="tab" data-toggle="tab">Languages</a>
+                            <a href="#publishers" class="nav-link" aria-controls="publishers" role="tab" data-toggle="tab">Publishers</a>
                         </li>
                         <li role="presentation" class="nav-item">
                             <a href="#fields" class="nav-link" aria-controls="fields" role="tab" data-toggle="tab">Genres</a>
@@ -52,20 +49,11 @@
                                 </thead>
                             </table>
                         </div>
-                        <div role="tabpanel" class="tab-pane" id="locations">
-                            <table id="location-table" style="width: 100%;">
+                        <div role="tabpanel" class="tab-pane" id="publishers">
+                            <table id="publisher-table" style="width: 100%;">
                                 <thead>
                                     <tr>
-                                        <th>Country</th>
-                                    </tr>
-                                </thead>
-                            </table>
-                        </div>
-                        <div role="tabpanel" class="tab-pane" id="languages">
-                            <table id="language-table" style="width: 100%;">
-                                <thead>
-                                    <tr>
-                                        <th>Language</th>
+                                        <th>Publisher</th>
                                     </tr>
                                 </thead>
                             </table>
@@ -87,29 +75,34 @@
 {% endblock %}
 
 {% block main %}
-    <div class="container">
-        <div class="row">
-            <div class="col-12 heading whitesmoke-fore light-gray">
+    <div style="padding-left: 0; padding-right: 0;" class="container">
+        <div class="row no-gutters">
+            <div class="col-12 heading whitesmoke-fore dark-red">
                 <img src="/static/missiology/img/doodad-light-gray.png" class="heading-img" style="max-height: 55px;" />
                 Bibliography
+                {% if is_admin or can_blog %}
+                    <div class="float-right" style="margin-right: 10px;">
+                        <a href="/admin/bibliography/source/" class="btn btn-light">Manage</a>
+                    </div>
+                {% endif %}
             </div>
         </div>
 
-        <div class="row bg-white">
-            <div class="col-lg bib-column">
-                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#filter-modal">
+        <div class="row no-gutters mt-15">
+            <div class="col-sm-12 dark-gray filter-panel">
+                <button type="button" class="btn btn-light" data-toggle="modal" data-target="#filter-modal">
                     Filter
-                </button> by person, role, location, language, or genre.
-                <div id="filter-panel" class="hidden">
-                    <h4 class="text-muted">Current Filters</h4>
-                    <div id="current-filters">
+                </button> by person, role, publisher, or genre.
+                <div id="filter-panel" class="d-none mt-15">
+                    <h4 class="subheading whitesmoke-fore">Current Filters</h4>
+                    <div id="current-filters" class="d-flex align-items-center">
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="row bg-white">
-            <div class="col-lg bib-column-gray">
+        <div class="row no-gutters mt-15">
+            <div class="col-sm-12 col-md-10 bib-column-gray">
                 <table id="source-table" style="width: 100%;">
                     <thead>
                         <tr>
@@ -117,21 +110,40 @@
                             <th>Title</th>
                             <th>People</th>
                             <th>Date</th>
-                            <th>Language</th>
-                            <th>Location</th>
+                            <th>Publisher</th>
                             <th>Genre</th>
                         </tr>
                     </thead>
                 </table>
             </div>
-        </div>
-        {% if is_admin %}
-            <div class="row bg-white">
-                <div class="col-sm-12">
-                    <a class="btn" href="/admin/bibliography/source/">Manage</a>
+            <div class="col-sm-12 col-md-2">
+                <div class="row no-gutters sidebar-row">
+                    <div class="col-12">
+                        <div class="ad-block white">
+                            <a target="_blank" href="https://www.eerdmans.com/Products/7498/participating-in-gods-mission.aspx"><img src="/static/missiology/img/books/demo1.png" class="img-fluid" /></a>
+                        </div>
+                        <div class="ad-block white">
+                            <a target="_blank" href="https://www.ivpress.com/can-white-people-be-saved"><img src="../static/missiology/img/books/demo2.png" class="img-fluid" /></a>
+                        </div>
+                        <div class="ad-block white">
+                            <a target="_blank" href="http://fortresspress.com/product/diaspora-christianities-global-scattering-and-gathering-south-asian-christians"><img src="../static/missiology/img/books/demo3.png" class="img-fluid" /></a>
+                        </div>
+                        <div class="ad-block white">
+                            <a target="_blank" href="http://www.bakerpublishinggroup.com/books/cultural-insights-for-christian-leaders/388140"><img src="../static/missiology/img/books/demo4.png" class="img-fluid" /></a>
+                        </div>
+                        <div class="ad-block white">
+                            <a target="_blank" href="https://www.zondervan.com/9780310522737/four-views-on-the-churchs-mission/"><img src="../static/missiology/img/books/demo5.png" class="img-fluid" /></a>
+                        </div>
+                        <div class="ad-block white">
+                            <a target="_blank" href="https://wipfandstock.com/receptor-oriented-communication-for-hui-muslims-in-china.html"><img src="../static/missiology/img/books/demo6.png" class="img-fluid" /></a>
+                        </div>
+                        <div class="ad-block white">
+                            <a target="_blank" href="https://missionbooks.org/products/detail/missiological-research"><img src="../static/missiology/img/books/demo7.png" class="img-fluid" /></a>
+                        </div>
+                    </div>
                 </div>
             </div>
-        {% endif %}
+        </div>
         <form id="export-form" action="/bibliography/export" method="post">
             {% csrf_token %}
             <input id="export-ids" type="hidden" name="ids" value="" />
@@ -162,8 +174,7 @@
                     { "targets": 3, "width": "10%" },
                     { "targets": 4, "width": "10%" },
                     { "targets": 5, "width": "10%" },
-                    { "targets": 6, "width": "10%" },
-                    { "targets": 7, "visible": false, "searchable": true }
+                    { "targets": 6, "visible": false, "searchable": true }
                 ],
                 "order": [[ 1, "asc" ]],
                 "buttons": [
@@ -208,24 +219,6 @@
                 "pagingType": "full"
             });
 
-            $('#location-table').DataTable({
-                "ajax": '/bibliography/locations?format=datatables',
-                "dom": 'ftp',
-                "pageLength": 10,
-                "scrollX": true,
-                "scrollCollapse": true,
-                "pagingType": "full"
-            });
-
-            $('#language-table').DataTable({
-                "ajax": '/bibliography/languages?format=datatables',
-                "dom": 'ftp',
-                "pageLength": 10,
-                "scrollX": true,
-                "scrollCollapse": true,
-                "pagingType": "full"
-            });
-
             $('#field-table').DataTable({
                 "ajax": '/bibliography/fields?format=datatables',
                 "dom": 'ftp',
@@ -235,10 +228,18 @@
                 "pagingType": "full"
             });
 
+            $('#publisher-table').DataTable({
+                "ajax": '/bibliography/publishers?format=datatables',
+                "dom": 'ftp',
+                "pageLength": 10,
+                "scrollX": true,
+                "scrollCollapse": true,
+                "pagingType": "full"
+            });
+
+
             $('#source-table').removeClass('display').addClass('table table-striped table-bordered');
             $('#people-table').addClass('table table-striped table-bordered');
-            $('#location-table').addClass('table table-striped table-bordered');
-            $('#language-table').addClass('table table-striped table-bordered');
             $('#publisher-table').addClass('table table-striped table-bordered');
             $('#field-table').addClass('table table-striped table-bordered');
             $('#role-table').addClass('table table-striped table-bordered');
@@ -274,13 +275,13 @@
             var source_url = "/bibliography/sources?format=datatables&filter=";
 
             if (filters.length > 0) {
-                $('#filter-panel').removeClass('hidden');
+                $('#filter-panel').removeClass('d-none');
                 for (var x = 0; x < filters.length; x++) {
                     source_url += filters[x].type + '_' + filters[x].id + ',';
-                    current_filters += "<span id='filter-" + filters[x].type + "-" + filters[x].id + "'>" + filters[x].desc + "<a href=\"javascript: unfilter('" + filters[x].type + "', " + filters[x].id + ");\"><span class='glyphicon glyphicon-remove-circle' aria-hidden='true'> </span></a></span>";
+                    current_filters += "<span id='filter-" + filters[x].type + "-" + filters[x].id + "'>" + filters[x].desc + "<a href=\"javascript: unfilter('" + filters[x].type + "', " + filters[x].id + ");\">&nbsp;<span class='oi oi-delete whitesmoke-fore' aria-hidden='true'> </span></a></span>";
                 }
             } else {
-                $('#filter-panel').addClass('hidden');
+                $('#filter-panel').addClass('d-none');
                 $('#current-filters').html("");
                 source_url = source_url.replace("&filter=", "");
             }

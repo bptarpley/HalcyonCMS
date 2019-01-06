@@ -1,0 +1,117 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>St. Philips Episcopal Church</title>
+    <link rel="shortcut icon" href="{% static 'stphilips/favicon.ico' %}" />
+    <link rel="stylesheet" href="https://use.typekit.net/rzc2evt.css">
+    <link rel="stylesheet" href="{% static 'stphilips/css/bootstrap.min.css' %}"/>
+    <link rel="stylesheet" href="{% static 'stphilips/css/open-iconic-bootstrap.css' %}"/>
+    <link rel="stylesheet" href="{% static 'stphilips/css/stpec.css' %}"/>
+    {% block css %}
+    {% endblock %}
+</head>
+<body>
+    <div class="container">
+
+    {% block modals %}
+    {% endblock %}
+
+    <!-- NAVBAR -->
+    <nav id="navbar" class="navbar navbar-expand navbar-dark fixed-top">
+        <a class="navbar-brand" href="/"><img border="0" class="img-fluid" src="{% static 'img/stpec-logo.png' %}" /></a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-menu" aria-controls="navbar-menu" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbar-menu">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="/blog">Blog</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/resource">Resources</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/resource#giving">Give</a>
+                </li>
+                <li class="nav-item float-right">
+                    {% if response.is_admin %}
+                        <a class="nav-link" href="/accounts/register">Logout</a>
+                    {% else %}
+                        <a class="nav-link" href="/accounts/login">Login</a>
+                    {% endif %}
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- SITE RESPONSES -->
+    {% if response %}
+        {% if response.success %}
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+              {{ response.success }}
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+        {% endif %}
+        {% for message in response.messages %}
+            <div class="alert alert-primary alert-dismissible fade show" role="alert">
+              {{ message }}
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+        {% endfor %}
+        {% for error in response.errors %}
+            <div class="alert alert-primary alert-dismissible fade show" role="alert">
+              {{ error }}
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+        {% endfor %}
+    {% endif %}
+    {% block main %}{% endblock %}
+
+    <div class="container-fluid" style="height: 200px;">
+        &nbsp;
+    </div>
+
+    <script src="{% static 'js/jquery-3.2.1.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+
+    <script type="text/javascript">
+        var page_id = {% if page %}{{ page.id }}{% elif page_id %}{{ page_id }}{% else %}0{% endif %};
+        var csrf_token = '{{ csrf_token }}';
+        var medium_pixel_width = 768;
+        var large_pixel_width = 1100;
+        var default_header_css = "row no-gutters stpec-header-light-blue section-header";
+        var default_row_css = "row section-content";
+        var default_col_css = "";
+
+        $(document).ready(function(){
+
+            /*
+            $(window).scroll(function(){
+                if ($(this).scrollTop() > 200 && $(window).width() > medium_pixel_width) {
+                    $('#navbar').fadeIn(500);
+                    $('#navbar').css("display", "flex");
+                } else if ($(window).width() > medium_pixel_width) {
+                    $('#navbar').fadeOut(500);
+                }
+            });
+            */
+        });
+
+
+    </script>
+    <script src="{% static 'js/halcyon.js' %}"></script>
+    {% block js %}
+    {% endblock %}
+    </div>
+</body>
+</html>
