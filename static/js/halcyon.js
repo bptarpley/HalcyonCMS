@@ -200,9 +200,9 @@ function select_col(row_id, col_id) {
                 <option value="10">10</option><option value="11">11</option><option value="12">12</option>
             </select>
         </div>
-        <div class="form-group">
+        <div class="form-check-inline">
+            <input class="form-check-input" type="checkbox" id="sec-layout-row-${row_id}-col-${col_id}-custom-box" onchange="change_column_custom('${row_id}', '${col_id}');"/>
             <label for="sec-layout-row-${row_id}-col-${col_id}-custom-box">Custom HTML?</label>
-            <input class="form-control" type="checkbox" id="sec-layout-row-${row_id}-col-${col_id}-custom-box" onchange="change_column_custom('${row_id}', '${col_id}');"/>
         </div>
         <div class="form-group">
             <label for="sec-layout-row-${row_id}-col-${col_id}-css-box">CSS</label>

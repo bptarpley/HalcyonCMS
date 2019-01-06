@@ -4,6 +4,7 @@ from django.contrib.auth import authenticate, logout
 from django.contrib.auth import login as auth_login
 from django.utils.html import escape
 from django.shortcuts import render, redirect, HttpResponse
+from django.template import loader, Context
 from .models import *
 from post.models import BlogEntry, PodCast, Resource
 from bibliography.models import Source
@@ -446,8 +447,17 @@ def process_CMS(request, res, nice_url):
     # GET THE SECTIONS AND LOAD CONTENT
     try:
         sections = SiteSection.objects.filter(page_id=page.id).order_by('order')
-        order = -1;
+        order = -1
         for section in sections:
+            if 'section' in settings.THEME_TEMPLATES:
+                template = loader.get_template(settings.THEME_TEMPLATES['section'])
+                context = {
+                    'section': section,
+                    'response': res,
+                    'editing': editing,
+                    'page': page}
+                section.html = template.render(context)
+
             if section.order == order:
                 section.order += 1
                 section.save()

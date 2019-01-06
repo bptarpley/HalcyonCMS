@@ -205,8 +205,24 @@ h1, h2, h3, h4 {
 }
 
 .section-settings {
+    opacity: 0.8;
+    padding: 10px;
+    z-index: 900;
+    position: absolute;
+    width: 70px;
+    left: -70px;
+    background-color: #007bff;
+}
+
+.section-settings a {
     color: #FFFFFF;
-    font-size: 1rem;
+}
+
+.section-header {
+}
+
+.section {
+    margin-bottom: 15px;
 }
 
 .sec-layout-col {

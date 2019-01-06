@@ -17,6 +17,107 @@
 <body>
     <div class="container">
 
+    {% if response.is_admin and editing %}
+        <!-- SECTION EDITING MODAL -->
+        <div id="section-modal" class="modal" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <form id="sec-layout-form" method="post" action="">
+                        {% csrf_token %}
+                        <input type="hidden" id="sec-page-id" name="page-id" value="{{ page_id }}"/>
+                        <input type="hidden" id="sec-id" name="sec-id" value=""/>
+                        <input type="hidden" id="sec-order" name="sec-order" value=""/>
+                        <input type="hidden" id="sec-layout-json" name="layout-json" value="{}"/>
+
+                        <input id="sec-num-rows" type="hidden" value="0"/>
+                        <div class="modal-header">
+                            <h5 class="modal-title">Edit Section</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="container">
+                                <div class="row" style="margin-bottom: 20px;">
+                                    <div class="col-md-8">
+                                        <div class="form-group">
+                                            <label for="sec-header-text">Header Text</label>
+                                            <input class="form-control" id="sec-header-text" type="text" name="header-text" placeholder="My Section"/>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="sec-header-css">Header CSS</label>
+                                            <input type="text" class="form-control" id="sec-header-css" name="header-css" />
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="sec-header-css">Anchor Name</label>
+                                            <input class="form-control" id="sec-header-name" type="text" name="header-name" placeholder="my_section"/>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-check-inline">
+                                            <input class="form-check-input" id="sec-show-header" type="checkbox" name="show-header" />
+                                            <label for="sec-show-header">Show Header</label>
+                                        </div>
+                                        <div class="form-check-inline">
+                                            <input class="form-check-input" id="sec-full-width" type="checkbox" name="full-width" />
+                                            <label for="sec-full-width">Full Screen Width</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <h5>Layout</h5>
+                                            <hr/>
+                                            <div id="sec_layout_alert_box"></div>
+                                            <a href="javascript: add_row();">Add Row</a>
+                                            <div id="sec-layout-box" class="container"></div>
+                                            <div id="sec-col-settings-div" class="col-md-12">
+                                                <!--Column settings populated here via halcyon.js-->
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <div class="float-left">
+                                <button type="button" class="btn btn-primary" onclick="save_section();">Save</button>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            </div>
+                            <div class="float-right">
+                                <button type="button" class="btn btn-danger" onclick="delete_section();">Delete Section</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- CUSTOM CONTENT EDITING MODAL -->
+        <div id="content-edit-modal" class="modal" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <form id="content-edit-form" method="post" action="">
+                        {% csrf_token %}
+                        <div class="modal-header">
+                            <h5 class="modal-title">Edit Custom Content</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body" id="custom-editor-div">
+                            <div id="custom-editor"></div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" onclick="save_custom_edit();">Save</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    {% endif %}
     {% block modals %}
     {% endblock %}
 
@@ -92,22 +193,6 @@
         var default_header_css = "row no-gutters stpec-header-light-blue section-header";
         var default_row_css = "row section-content";
         var default_col_css = "";
-
-        $(document).ready(function(){
-
-            /*
-            $(window).scroll(function(){
-                if ($(this).scrollTop() > 200 && $(window).width() > medium_pixel_width) {
-                    $('#navbar').fadeIn(500);
-                    $('#navbar').css("display", "flex");
-                } else if ($(window).width() > medium_pixel_width) {
-                    $('#navbar').fadeOut(500);
-                }
-            });
-            */
-        });
-
-
     </script>
     <script src="{% static 'js/halcyon.js' %}"></script>
     {% block js %}
