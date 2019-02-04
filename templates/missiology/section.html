@@ -1,0 +1,38 @@
+{% load static %}
+
+<a name="{{ section.name }}"></a>
+{% if response.is_admin and editing %}
+        <div id="section-{{ section.id }}-settings" class="section-settings rounded-left">
+            <div class="d-flex align-items-center">
+                &nbsp;<a class="wlink" href="javascript: edit_section('{{ section.id }}');"><span class="oi oi-cog"></span></a>
+                &nbsp;<a class="wlink" href="/{{ page.url }}?editing=y&section={{ section.id }}&move=up"><span class="oi oi-arrow-top"></span></a>
+                <a class="wlink" href="/{{ page.url }}?editing=y&section={{ section.id }}&move=down"><span class="oi oi-arrow-bottom"></span></a>
+            </div>
+        </div>
+{% endif %}
+{% if section.show_header %}
+    <div id="section-header-{{ section.id }}" class="row no-gutters {{ section.header_css_class }}">
+        <div class="col-sm-12 heading whitesmoke-fore dark-gray">
+            <img src="/static/missiology/img/doodad-light-gray.png" class="heading-img" style="max-height: 55px;" />
+            {{ section.header_text }}
+        </div>
+    </div>
+{% endif %}
+<div id="section-{{ section.id }}">
+    {% for row in section.rows %}
+        <div class="{{ row.css }}">
+            {% for col in row.cols %}
+                <div id="section-content-{{ col.id }}"
+                    class="col-sm-{{ col.width }} {{ col.css }}"
+                    {% if response.is_admin and editing and not col.is_custom %}
+                        contenteditable="true"
+                    {% elif response.is_admin and editing and col.is_custom %}
+                        onclick="show_custom_editor({{ col.id }});"
+                    {% endif %}
+                >
+                    {{ col.html|safe }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endfor %}
+</div>

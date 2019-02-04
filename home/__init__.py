@@ -4,14 +4,22 @@ import re
 
 class SiteResponse(object):
 
-    def __init__(self, user=None):
+    def __init__(self, req=None):
         self.fname = ''
         self.is_admin = False
 
-        if user:
-            if user.is_authenticated:
-                self.fname = user.first_name
-                self.is_admin = user.is_superuser
+        if req.user:
+            if req.user.is_authenticated:
+                self.fname = req.user.first_name
+                self.is_admin = req.user.is_superuser
+
+        self.browser = ""
+        if _contains(req.META['HTTP_USER_AGENT'], [
+            'Mozilla',
+            'Pixel Build',
+            'Chrome'
+        ]):
+            self.browser = "PIXEL_CHROME"
 
         self.messages = []
         self.errors = []

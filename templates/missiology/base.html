@@ -1,3 +1,4 @@
+{% load extras %}
 <!doctype html>
 <html lang="en">
     <head>
@@ -19,8 +20,25 @@
         <link href="https://fonts.googleapis.com/css?family=Merriweather+Sans" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css?family=Martel" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css?family=IM+Fell+Great+Primer" rel="stylesheet">
+        {% if response.is_admin and editing %}
+            <style type="text/css">
+                #custom-editor {
+                    /** Setting height is also important, otherwise editor won't show up**/
+                    height: 300px;
+                }
+            </style>
+        {% endif %}
         {% block css %}
         {% endblock %}
+
+        <!-- Google Analytics Stuff -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-133448175-1"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'UA-133448175-1');
+        </script>
 
         {% block headjs %}
         {% endblock %}
@@ -30,7 +48,109 @@
     </head>
 
     <body>
+        {% if response.is_admin and editing %}
+            <!-- SECTION EDITING MODAL -->
+            <div id="section-modal" class="modal" tabindex="-1" role="dialog">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                        <form id="sec-layout-form" method="post" action="">
+                            {% csrf_token %}
+                            <input type="hidden" id="sec-page-id" name="page-id" value="{{ page_id }}"/>
+                            <input type="hidden" id="sec-id" name="sec-id" value=""/>
+                            <input type="hidden" id="sec-order" name="sec-order" value=""/>
+                            <input type="hidden" id="sec-layout-json" name="layout-json" value="{}"/>
+
+                            <input id="sec-num-rows" type="hidden" value="0"/>
+                            <div class="modal-header">
+                                <h5 class="modal-title">Edit Section</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="container">
+                                    <div class="row" style="margin-bottom: 20px;">
+                                        <div class="col-md-8">
+                                            <div class="form-group">
+                                                <label for="sec-header-text">Header Text</label>
+                                                <input class="form-control" id="sec-header-text" type="text" name="header-text" placeholder="My Section"/>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="sec-header-css">Header CSS</label>
+                                                <input type="text" class="form-control" id="sec-header-css" name="header-css" />
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="sec-header-css">Anchor Name</label>
+                                                <input class="form-control" id="sec-header-name" type="text" name="header-name" placeholder="my_section"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-check-inline">
+                                                <input class="form-check-input" id="sec-show-header" type="checkbox" name="show-header" />
+                                                <label for="sec-show-header">Show Header</label>
+                                            </div>
+                                            <div class="form-check-inline">
+                                                <input class="form-check-input" id="sec-full-width" type="checkbox" name="full-width" />
+                                                <label for="sec-full-width">Full Screen Width</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <h5>Layout</h5>
+                                                <hr/>
+                                                <div id="sec_layout_alert_box"></div>
+                                                <a href="javascript: add_row();">Add Row</a>
+                                                <div id="sec-layout-box" class="container"></div>
+                                                <div id="sec-col-settings-div" class="col-md-12">
+                                                    <!--Column settings populated here via halcyon.js-->
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <div class="float-left">
+                                    <button type="button" class="btn btn-primary" onclick="save_section();">Save</button>
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                </div>
+                                <div class="float-right">
+                                    <button type="button" class="btn btn-danger" onclick="delete_section();">Delete Section</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CUSTOM CONTENT EDITING MODAL -->
+            <div id="content-edit-modal" class="modal" tabindex="-1" role="dialog">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                        <form id="content-edit-form" method="post" action="">
+                            {% csrf_token %}
+                            <div class="modal-header">
+                                <h5 class="modal-title">Edit Custom Content</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body" id="custom-editor-div">
+                                <div id="custom-editor"></div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-primary" onclick="save_custom_edit();">Save</button>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
         {% block modals %}{% endblock %}
+
         <nav class="navbar navbar-expand-md navbar-dark fixed-top dark-gray">
             <div class="container">
                 <a class="navbar-brand" href="/"><img src="/static/missiology/img/navbar.png" style="height: 55px;" /></a>
@@ -117,6 +237,35 @@
 
                 {% block main %}
                 {% endblock %}
+
+                {% if response.is_admin %}
+                    <div class="row no-gutters mt-15">
+                        <div class="col-12 heading whitesmoke-fore dark-red">
+                            <img src="/static/missiology/img/doodad-light-gray.png" class="heading-img" style="max-height: 55px;" />
+                            Admin Tools
+                        </div>
+                    </div>
+                    <div class="row no-gutters">
+                        <div class="col-6 white text-content">
+                            {% if editing %}
+                                <a href="{% if not page.url|startswith:'/' %}/{% endif %}{{ page.url }}" class="btn btn-dark" style="color: #FFFFFF;">Stop Editing</a><br>
+                                <a href="javascript: new_section({{ sections|length }});">New Section</a><br>
+                                <a href="/admin/home/sitepage/" target="_blank">Manage Pages</a>
+                            {% else %}
+                                <a href="?editing=y" class="btn btn-dark" style="color: #FFFFFF;">Edit Page</a>
+                            {% endif %}
+                        </div>
+                        <div class="col-6 white text-content">
+                            <form method="get" action="/accounts/register" style="display: inline-block;">
+                                <input type="text" name="impersonate-username" />
+                                <button type="submit" class="btn btn-dark" style="color: #FFFFFF;">Manage User</button>
+                            </form>
+                            <div>
+                                <a href="/static/missiology/html/user_help.html" target="_blank">User Creation Guide</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
             </main>
 
             <div class="container-fluid dark-gray w-100 p-0 mt-15">
@@ -147,23 +296,18 @@
             var medium_pixel_width = 768;
             var large_pixel_width = 1100;
 
-            $(document).ready(function(){
-
-                /*
-                $(window).scroll(function(){
-                    if ($(this).scrollTop() > 200 && $(window).width() > medium_pixel_width) {
-                        $('#navbar').fadeIn(500);
-                        $('#navbar').css("display", "flex");
-                    } else if ($(window).width() > medium_pixel_width) {
-                        $('#navbar').fadeOut(500);
-                    }
-                });
-                */
-            });
-
-
+            var default_header_css = "mt-15";
+            var default_row_css = "row no-gutters";
+            var default_col_css = "white text-content mt-15";
         </script>
         <script src="/static/js/halcyon.js"></script>
+
+        {% if response.is_admin and editing %}
+            <script src="/static/js/ckeditor/ckeditor.js"></script>
+            <script src="/static/js/jQuery.base64.js"></script>
+            <script src="/static/js/ace/ace.js"></script>
+        {% endif %}
+
         {% block js %}
         {% endblock %}
     </body>

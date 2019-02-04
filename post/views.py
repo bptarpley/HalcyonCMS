@@ -6,12 +6,14 @@ from django.utils.html import escape
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from home import SiteResponse, _contains, _clean, _paginate
+from home.views import process_CMS
 from .models import *
 from mutagen.mp3 import MP3
 from datetime import datetime
 import traceback
 import os
 import json
+import uuid
 
 
 @login_required
@@ -36,7 +38,7 @@ def check_nice_url(request):
 
 @login_required
 def create_blog_post(request):
-    res = SiteResponse(request.user)
+    res = SiteResponse(request)
     page = '1'
     blog_post = {
         'id': 'new',
@@ -76,6 +78,10 @@ def create_blog_post(request):
         blog_post.set_tags(_clean(request.POST, 'tags'))
         blog_post.published = 'published' in request.POST
         blog_post.sticky = 'sticky' in request.POST
+
+        if 'featured-img' in request.POST:
+            blog_post.featured_image = _clean(request.POST, 'featured-img')
+
         blog_post.save()
 
         return redirect('/blog?page=' + page)
@@ -97,17 +103,16 @@ def create_blog_post(request):
 
 
 def view_blog(request, nice_url):
-    res = SiteResponse(request.user)
+    res = SiteResponse(request)
     user = None
     post = None
-    full_url = "{0}{1}/blog/{2}".format(
-        settings.PROTOCOL_PREFIX,
-        settings.ALLOWED_HOSTS[0],
+    full_url = "{0}/blog/{1}".format(
+        settings.SITE_PREFIX,
         nice_url
     )
 
     related_posts = []
-    num_related = 5
+    num_related = 10
     user = None
     is_admin = False
     if request.user.is_authenticated:
@@ -143,7 +148,7 @@ def view_blog(request, nice_url):
 
 
 def blog(request):
-    res = SiteResponse(request.user)
+    res = SiteResponse(request)
     user = None
     tag_id = None
     is_admin = False
@@ -184,6 +189,8 @@ def blog(request):
 
     posts, paginator = _paginate(post_list, per_page, page)
 
+    page, sections, editing, res = process_CMS(request, res, '/blog')
+
     return render(
         request,
         settings.THEME_TEMPLATES['blog'],
@@ -195,13 +202,16 @@ def blog(request):
             'is_admin': is_admin,
             'can_blog': can_blog,
             'tag_id': tag_id,
-            'response': res
+            'response': res,
+            'page': page,
+            'sections': sections,
+            'editing': editing
         }
     )
 
 
 def create_podcast(request):
-    res = SiteResponse(request.user)
+    res = SiteResponse(request)
     podcast = {
         'id': 'new',
         'title': '',
@@ -238,14 +248,22 @@ def create_podcast(request):
         podcast.nice_url = _clean(request.POST, 'nice-url')
         podcast.summary = unescape(_clean(request.POST, 'summary'))
 
-        podcast_path = settings.MEDIA_ROOT + '/' + _clean(request.POST, 'url')
-        audio = MP3(podcast_path)
-        podcast.set_duration(audio.info.length)
-        podcast.byte_size = str(os.path.getsize(podcast_path))
+        if 'itunes-summary' in request.POST:
+            podcast.itunes_summary = _clean(request.POST, 'itunes-summary')
+
+        if _clean(request.POST, 'url'):
+            podcast_path = settings.MEDIA_ROOT + '/' + _clean(request.POST, 'url')
+            audio = MP3(podcast_path)
+            podcast.set_duration(audio.info.length)
+            podcast.byte_size = str(os.path.getsize(podcast_path))
 
         podcast.pub_date = datetime.strptime(_clean(request.POST, 'pub-date'), '%m/%d/%Y %I:%M %p')
         podcast.url = _clean(request.POST, 'url')
         podcast.published = 'published' in request.POST
+
+        if not podcast.guid:
+            podcast.guid = str(uuid.uuid4())
+
         podcast.save()
 
         return redirect('/podcast')
@@ -265,7 +283,7 @@ def create_podcast(request):
 
 
 def view_podcast(request, nice_url):
-    res = SiteResponse(request.user)
+    res = SiteResponse(request)
     user = None
     podcast = None
     full_url = "{0}{1}/podcast/{2}".format(
@@ -311,7 +329,7 @@ def view_podcast(request, nice_url):
 
 
 def podcast(request):
-    res = SiteResponse(request.user)
+    res = SiteResponse(request)
     user = None
     is_admin = False
     can_cast = False
@@ -330,6 +348,7 @@ def podcast(request):
         podcast_list = PodCast.objects.filter(published=True, pub_date__lte=datetime.now()).order_by('title')
 
     podcasts, paginator = _paginate(podcast_list, per_page, page)
+    page, sections, editing, res = process_CMS(request, res, '/podcast')
 
     return render(
         request,
@@ -340,13 +359,42 @@ def podcast(request):
             'paginator': paginator,
             'is_admin': is_admin,
             'can_cast': can_cast,
-            'response': res
+            'response': res,
+            'page': page,
+            'sections': sections,
+            'editing': editing
         }
     )
 
 
+def blog_feed(request):
+    items = BlogEntry.objects.filter(published=True, pub_date__lte=datetime.now()).order_by('-pub_date')[:10]
+    last_build = datetime.now()
+    if items:
+        last_build = items[0].pub_date
+
+    return render(
+        request,
+        settings.THEME_TEMPLATES['blog_feed'],
+        {
+            'items': items,
+            'title': settings.BLOG_TITLE,
+            'link': settings.BLOG_LINK,
+            'description': settings.BLOG_DESCRIPTION,
+            'category': settings.BLOG_CATEGORY,
+            'copyright': settings.BLOG_COPYRIGHT,
+            'last_build': last_build,
+            'editor': settings.BLOG_EDITOR,
+            'webmaster': settings.BLOG_WEBMASTER,
+            'generator': settings.BLOG_GENERATOR,
+            'image': settings.BLOG_IMAGE
+        },
+        content_type='text/xml'
+    )
+
+
 def podcast_feed(request):
-    items = PodCast.objects.filter(published=True, pub_date__lte=datetime.now()).order_by('title')[:5]
+    items = PodCast.objects.filter(published=True, pub_date__lte=datetime.now()).order_by('-pub_date')[:5]
 
     return render(
         request,
@@ -361,8 +409,12 @@ def podcast_feed(request):
             'owner_email': settings.PODCAST_OWNER_EMAIL,
             'copyright': settings.PODCAST_COPYRIGHT,
             'author': settings.PODCAST_AUTHOR,
-            'image_url': settings.PODCAST_IMAGE_URL,
-            'explicit': settings.PODCAST_EXPLICIT
+            'image': settings.PODCAST_IMAGE,
+            'explicit': settings.PODCAST_EXPLICIT,
+            'category1': settings.PODCAST_CATEGORY1,
+            'category2': settings.PODCAST_CATEGORY2,
+            'category3': settings.PODCAST_CATEGORY3,
+            'media_prefix': settings.PODCAST_MEDIA_PREFIX
         },
         content_type='text/xml'
     )
@@ -370,7 +422,7 @@ def podcast_feed(request):
 
 @login_required
 def create_resource(request):
-    res = SiteResponse(request.user)
+    res = SiteResponse(request)
     page = '1';
     resource = {
         'id': 'new',
@@ -393,7 +445,7 @@ def create_resource(request):
         resource = Resource.objects.get(id=_clean(request.GET, 'resource-id'))
 
     # SAVE POST
-    elif request.method == 'POST' and _contains(request.POST, ['resource-id', 'title', 'nice-url', 'tags', 'content']):
+    elif request.method == 'POST' and _contains(request.POST, ['resource-id', 'title', 'nice-url', 'tags', 'content', 'pub-date']):
         page = _clean(request.GET, 'page', page)
         if _clean(request.POST, 'resource-id') == 'new':
             resource = Resource.objects.create(user=user)
@@ -407,6 +459,7 @@ def create_resource(request):
         resource.set_tags(_clean(request.POST, 'tags'))
         resource.published = 'published' in request.POST
         resource.sticky = 'sticky' in request.POST
+        resource.pub_date = datetime.strptime(_clean(request.POST, 'pub-date'), '%m/%d/%Y %I:%M %p')
         resource.save()
 
         return redirect('/resources?page=' + page)
@@ -425,7 +478,7 @@ def create_resource(request):
 
 
 def view_resource(request, nice_url):
-    res = SiteResponse(request.user)
+    res = SiteResponse(request)
     user = None
     resource = None
     related_resources = []
@@ -471,7 +524,7 @@ def view_resource(request, nice_url):
 
 
 def resources(request):
-    res = SiteResponse(request.user)
+    res = SiteResponse(request)
     user = None
     is_admin = False
     tag_id = None
@@ -502,6 +555,7 @@ def resources(request):
         tag_list = Tag.objects.filter(post__in=resource_list).order_by('text').distinct()
 
     resources, paginator = _paginate(resource_list, per_page, page)
+    page, sections, editing, res = process_CMS(request, res, '/resources')
 
     return render(
         request,
@@ -513,6 +567,9 @@ def resources(request):
             'tag_id': tag_id,
             'paginator': paginator,
             'is_admin': is_admin,
-            'response': res
+            'response': res,
+            'page': page,
+            'sections': sections,
+            'editing': editing
         }
     )

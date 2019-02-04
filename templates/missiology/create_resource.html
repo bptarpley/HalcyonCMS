@@ -2,6 +2,7 @@
 {% load extras %}
 
 {% block css %}
+    <link href="/static/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet">
     <style type="text/css">
         .ace_editor {
             /** Setting height is also important, otherwise editor wont showup**/
@@ -56,6 +57,15 @@
                     </div>
                 </div>
                 <div class="form-group">
+                    <label for="datetime-picker">Publication Date & Time</label>
+                    <div class="input-group date" id="datetime-picker" data-target-input="nearest">
+                        <input type="text" class="form-control datetimepicker-input" name="pub-date" data-target="#datetime-picker"/>
+                        <div class="input-group-append" data-target="#datetime-picker" data-toggle="datetimepicker">
+                            <div class="input-group-text"><span class="oi oi-calendar"></span></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
                     <a class="btn" href="/resources">Cancel</a>
                     <button type="button" class="btn btn-primary" id="save-button" onclick="save_resource();">Save</button>
                     {% if resource.id != 'new' %}
@@ -70,6 +80,8 @@
 {% block js %}
     <script src="/static/js/ckeditor/ckeditor.js"></script>
     <script src="/static/js/ace/ace.js"></script>
+    <script src="/static/js/moment.min.js"></script>
+    <script src="/static/js/tempusdominus-bootstrap-4.min.js"></script>
     <script src="/static/js/beautify/beautify.js"></script>
     <script src="/static/js/beautify/beautify-css.js"></script>
     <script src="/static/js/beautify/beautify-html.js"></script>
@@ -84,6 +96,21 @@
         $(document).ready(function(){
             CKEDITOR.inline('custom-editor', {
                 extraPlugins: ''
+            });
+
+            $('#datetime-picker').datetimepicker({
+                defaultDate: "{{ resource.pub_date|datetimeparse }}",
+                icons: {
+                    time: 'oi oi-clock',
+                    date: 'oi oi-calendar',
+                    up: 'oi oi-caret-top',
+                    down: 'oi oi-caret-bottom',
+                    previous: 'oi oi-caret-left',
+                    next: 'oi oi-caret-right',
+                    today: 'oi oi-circle-check',
+                    clear: 'oi oi-trash',
+                    close: 'oi oi-x'
+                }
             });
 
             $('#title-box').change(function() {

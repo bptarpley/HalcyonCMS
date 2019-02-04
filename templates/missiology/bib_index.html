@@ -88,6 +88,10 @@
             </div>
         </div>
 
+        {% for section in sections %}
+            {{ section.html }}
+        {% endfor %}
+
         <div class="row no-gutters mt-15">
             <div class="col-sm-12 dark-gray filter-panel">
                 <button type="button" class="btn btn-light" data-toggle="modal" data-target="#filter-modal">
@@ -119,6 +123,9 @@
             <div class="col-sm-12 col-md-2">
                 <div class="row no-gutters sidebar-row">
                     <div class="col-12">
+                        <div class="ad-block white">
+                            <a target="_blank" href="https://www.orbisbooks.com/christian-mission-contextual-theology-prophetic-dialogue.html"><img src="/static/missiology/img/books/demo8.png" class="img-fluid" /></a>
+                        </div>
                         <div class="ad-block white">
                             <a target="_blank" href="https://www.eerdmans.com/Products/7498/participating-in-gods-mission.aspx"><img src="/static/missiology/img/books/demo1.png" class="img-fluid" /></a>
                         </div>
@@ -162,9 +169,9 @@
         $(document).ready(function() {
             sources_table = $('#source-table').DataTable({
                 "ajax": '/bibliography/sources?format=datatables',
-                "dom": 'fBtpir',
+                "dom": 'ipfBtpir',
                 "processing": true,
-                "pageLength": 50,
+                "pageLength": 25,
                 "scrollX": true,
                 "scrollCollapse": true,
                 "columnDefs": [

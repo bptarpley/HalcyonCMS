@@ -1,19 +1,28 @@
 {% extends 'missiology/base.html' %}
 {% load extras %}
 
+{% block headmeta %}
+    <link rel="alternate" type="application/rss+xml" title="Subscribe" href="http://missiology.com/podcast/feed.rss" />
+{% endblock %}
+
 {% block main %}
     <div style="padding-left: 0; padding-right: 0;" class="container">
         <div class="row no-gutters">
             <div class="col-12 heading whitesmoke-fore dark-red">
                 <img src="/static/missiology/img/doodad-light-gray.png" class="heading-img" style="max-height: 55px;" />
                 Podcast
-                {% if is_admin or can_blog %}
-                    <div class="float-right" style="margin-right: 10px;">
-                        <a href="/podcast/create" class="btn btn-light">New Podcast</a>
-                    </div>
-                {% endif %}
+                <div class="float-right" style="margin-right: 10px;">
+                    <a href="/podcast/feed.rss" class="btn btn-light"><span class="oi oi-rss"></span></a>
+                    {% if is_admin or can_blog %}
+                        <a href="/podcast/create" class="btn btn-light">New Post</a>
+                    {% endif %}
+                </div>
             </div>
         </div>
+
+        {% for section in sections %}
+            {{ section.html }}
+        {% endfor %}
 
         <div class="row no-gutters mt-15">
             <!--<div class="col-sm-12 col-md-9">-->

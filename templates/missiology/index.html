@@ -1,8 +1,16 @@
 {% extends 'missiology/base.html' %}
 {% load extras %}
 
+{% block headmeta %}
+    <meta property="og:url" content="http://www.missiology.com" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Missiology.com" />
+    <meta property="og:description" content="A digital space dedicated to fostering the study of Christian mission." />
+    <meta property="og:image" content="www.missiology.com/static/missiology/img/missiology-FB.png" />
+{% endblock %}
+
 {% block main %}
-    <div id="header">
+    <div id="header" {% if response.browser == "PIXEL_CHROME" %}class="pixel-chrome"{% endif %}>
         <div class="d-none d-md-flex align-items-center brand-lg h-100">
             &nbsp;<!--<img src="/static/missiology/img/missiology.png" class="header-img mx-auto" />-->
         </div>
@@ -11,60 +19,9 @@
         </div>
     </div>
 
-    <div class="row no-gutters dark-red p-2">
-        <div class="col-12 col-sm-6 col-md-3 p-2">
-            <div class="row no-gutters">
-                <div class="d-flex align-items-center col-12">
-                    <img src="/static/missiology/img/blog-red.png" class="img-fluid subheading-img" />
-                    <span class="subheading whitesmoke-fore">Blog</span>
-                </div>
-            </div>
-            <div class="row no-gutters mt-2">
-                <div class="col-sm-12 text-small whitesmoke-fore">
-                    Curated news and perspectives from our diverse writing collective.
-                </div>
-            </div>
-        </div>
-        <div class="col-12 col-sm-6 col-md-3 p-2">
-            <div class="row no-gutters">
-                <div class="d-flex align-items-center col-12">
-                    <img src="/static/missiology/img/podcast-red.png" class="img-fluid subheading-img" />
-                    <span class="subheading whitesmoke-fore">Podcast</span>
-                </div>
-            </div>
-            <div class="row no-gutters mt-2">
-                <div class="col-sm-12 text-small whitesmoke-fore">
-                    Conversations with missiologists about their experiences in the study of mission.
-                </div>
-            </div>
-        </div>
-        <div class="col-12 col-sm-6 col-md-3 p-2">
-            <div class="row no-gutters">
-                <div class="d-flex align-items-center col-12">
-                    <img src="/static/missiology/img/bibliography-red.png" class="img-fluid subheading-img" />
-                    <span class="subheading whitesmoke-fore">Bibliography</span>
-                </div>
-            </div>
-            <div class="row no-gutters mt-2">
-                <div class="col-sm-12 text-small whitesmoke-fore">
-                    The latest and greatest of missiology texts, catalogued in our unique database.
-                </div>
-            </div>
-        </div>
-        <div class="col-12 col-sm-6 col-md-3 p-2">
-            <div class="row no-gutters">
-                <div class="d-flex align-items-center col-sm-12">
-                    <img src="/static/missiology/img/resources-red.png" class="img-fluid subheading-img" />
-                    <span class="subheading whitesmoke-fore">Resources</span>
-                </div>
-            </div>
-            <div class="row no-gutters mt-2">
-                <div class="col-sm-12 text-small whitesmoke-fore">
-                    Blogs, scholarly journals, organizations, schools, and more.
-                </div>
-            </div>
-        </div>
-    </div>
+    {% for section in sections %}
+        {{ section.html }}
+    {% endfor %}
 
     <div>
         <div class="row no-gutters mt-15">
@@ -362,19 +319,7 @@
                 </div>
                 <div class="row no-gutters mt-15 sidebar-row">
                     <div class="col-sm-12 white sidebar-col sidebar-item">
-                        <img src="../static/missiology/img/studyhere.jpg" class="img-fluid" />
-                    </div>
-                </div>
-
-                <div class="row no-gutters mt-15 sidebar-row">
-                    <div class="col-sm-12 white sidebar-col sidebar-item">
-                        <img src="../static/missiology/img/servehere.jpg" class="img-fluid" />
-                    </div>
-                </div>
-
-                <div class="row no-gutters mt-15 sidebar-row">
-                    <div class="col-sm-12 white sidebar-col sidebar-item">
-                        <img src="../static/missiology/img/readthis.jpg" class="img-fluid" />
+                        <a target="_blank" href="https://squareup.com/store/missiologystore/item/home-page-ad"><img src="../static/missiology/img/adspace.png" class="img-fluid" /></a>
                     </div>
                 </div>
             </div>

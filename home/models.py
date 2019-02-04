@@ -38,6 +38,9 @@ def search_pages(query):
                 end = match.start() + settings.SEARCH_CONTEXT_SIZE
                 context += full_text[start:end] + "</b> "
 
+            if not context:
+                context = full_text
+
             search_results.append({
                 'type': 'page',
                 'title': page.name,

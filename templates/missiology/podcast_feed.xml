@@ -1,4 +1,5 @@
-<rss xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" version="2.0">
+{% load extras %}
+<rss xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
     <channel>
         <language>{{ language }}</language>
         <title>{{ title }}</title>
@@ -14,28 +15,29 @@
             <itunes:email>{{ owner_email }}</itunes:email>
         </itunes:owner>
         <copyright>{{ copyright }}</copyright>
-        <itunes:category text="{{ category }}"/>
+        <atom:link href="{{ link }}/feed.rss" rel="self" type="application/rss+xml"/>
+        <itunes:category text="{{ category1 }}">
+                <itunes:category text="{{ category2 }}"/>
+        </itunes:category>
+        <itunes:category text="{{ category3 }}"/>
         <itunes:author>{{ author }}</itunes:author>
-        <itunes:image href="{{ image_url }}"/>
+        <itunes:image href="{{ image }}"/>
         <itunes:explicit>{{ explicit }}</itunes:explicit>
         {% for item in items %}
         <item>
-            <guid>{{ item.guid }}</guid>
+            <guid>{{ link }}/{{ item.nice_url }}</guid>
             <title>{{ item.title }}</title>
             <description>
-                {{ item.summary }}
+                <![CDATA[{{ item.summary|cleanhtml|safe }}]]>
             </description>
-            <itunes:subtitle>
-                {{ item.summary }}
-            </itunes:subtitle>
+            <!--<itunes:subtitle></itunes:subtitle>-->
             <itunes:summary>
-                {{ item.summary }}
+                {{ item.itunes_summary }}
             </itunes:summary>
-            <pubDate>{{ item.pub_date }}</pubDate>
+            <pubDate>{{ item.pub_date|feeddate }}</pubDate>
             <itunes:duration>{{ item.duration }}</itunes:duration>
-            <itunes:explicit>{{ item.explicit }}</itunes:explicit>
-            <enclosure url="{{ item.url }}" length="{{ item.byte_size }}" type="audio/mpeg"/>
-            <itunes:order>{{ forloop.counter }}</itunes:order>
+            <itunes:explicit>{{ explicit }}</itunes:explicit>
+            <enclosure url="{{ media_prefix }}{{ item.url }}" length="{{ item.byte_size }}" type="audio/mpeg"/>
         </item>
         {% endfor %}
     </channel>

@@ -8,7 +8,7 @@
     <meta property="og:title"         content="{{ post.title }}" />
     <meta property="og:description"   content="A blog post at missiology.com" />
     {% if post.featured_image %}
-        <meta property="og:image"     content="http://missiology.halcyonflies.com/media/{{ post.featured_image }}" />
+        <meta property="og:image"     content="http://missiology.com/media/{{ post.featured_image }}" />
     {% endif %}
 {% endblock %}
 
@@ -127,6 +127,7 @@
                     <div class="col-sm-12 sidebar-col white text-content">
                         {% for related in related_posts %}
                             <a href="/blog/{{ related.nice_url }}">{{ related.title }}</a><br>
+                            <br>
                         {% endfor %}
                     </div>
                 </div>

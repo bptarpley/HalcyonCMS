@@ -33,6 +33,17 @@ a.wlink:link, a.wlink:hover, a.wlink:visited {
     color: #F5F5F5;
 }
 
+/* button link */
+a.blink:link, a.blink:visited {
+    color: #7C1609;
+}
+
+a.blink:hover {
+    color: white;
+    text-decoration: none;
+    opacity: 1;
+}
+
 /* --------------------- */
 /* GENERAL COLOR CLASSES */
 /* --------------------- */
@@ -124,6 +135,7 @@ hr {
     border-top-width: 5px;
     border-top-color: #A9A9A9;
     border-top-style: solid;
+    width: 100%;
 }
 
 .text-small {
@@ -143,8 +155,12 @@ hr {
 	font-family: 'Martel', sans-serif;
     font-size: 1.1rem;
     line-height: 1.6;
-    padding: 20px !important;
+    padding: 20px 20px 20px 20px !important;
     text-align: left;
+}
+
+.full-height {
+    height: 100%;
 }
 
 .small-bold {
@@ -154,6 +170,35 @@ hr {
     font-weight: 900;
 }
 
+.sans {
+    font-family: 'Merriweather Sans', sans-serif;
+}
+
+blockquote {
+    margin-left: 20px;
+    border-left: 10px solid #999;
+    padding-left: 10px;
+}
+
+a.fn {
+    text-decoration: none;
+    font-size: 70% !important;
+    vertical-align: top !important;
+    font-weight: 900;
+    border-radius: 1em;
+    background: #7C1609;
+    color: #fff !important;
+    padding-top: 0px;
+    padding-right: 7px;
+    padding-bottom: 0px;
+    padding-left: 7px;
+    opacity: .6;
+}
+
+a.fn:hover {
+    opacity: 1;
+    
+}
 
 /* ------------------ */
 /*    HEADINGS        */
@@ -274,7 +319,7 @@ a.nav-link {
     font-family: 'Merriweather Sans', sans-serif;
     background-color: #FFFFFF;
     padding-left: 10px !important;
-    padding-right: 8px !important;
+    padding-right: 10px !important;
     padding-top: 8px;
     padding-bottom: 8px;
     font-size: 1.9rem;
@@ -454,6 +499,26 @@ a.nav-link {
     padding-left: 10px !important;
 }
 
+.pt-0 {
+    padding-top: 0px !important;
+}
+
+.pl-0 {
+    padding-left: 0px !important;
+}
+
+.pr-0 {
+    padding-right: 0px !important;
+}
+
+.pr-15 {
+    padding-right: 15px !important;
+}
+
+.pb-0 {
+    padding-bottom: 0px !important;
+}
+
 .mt-15 {
     margin-top: 15px;
 }
@@ -479,6 +544,20 @@ a.nav-link {
 .footer a {
     color: #F5F5F5;
     font-family: "Merriweather Sans", sans-serif;
+}
+
+.section-settings {
+    opacity: 0.8;
+    padding: 10px;
+    z-index: 900;
+    position: absolute;
+    width: 70px;
+    left: 0px;
+    background-color: #007bff;
+}
+
+.section-settings a {
+    color: #FFFFFF;
 }
 
 /* LARGE SIZE */
@@ -592,5 +671,10 @@ a.nav-link {
     #header {
         background-size: 300px !important;
         background-position: 50% 90px;
+    }
+
+    #header.pixel-chrome {
+        background-position: 50% 50% !important;
+        background-attachment: scroll !important;
     }
 }

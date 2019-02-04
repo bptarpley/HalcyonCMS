@@ -8,7 +8,7 @@
     <meta property="og:title"         content="{{ podcast.title }}" />
     <meta property="og:description"   content="A podcast at missiology.com" />
     {% if podcast.featured_image %}
-        <meta property="og:image"     content="http://missiology.halcyonflies.com/media/{{ podcast.featured_image }}" />
+        <meta property="og:image"     content="http://missiology.com/media/{{ podcast.featured_image }}" />
     {% endif %}
 {% endblock %}
 
@@ -57,7 +57,7 @@
                                     <source src="/media/{{ podcast.url }}" type="audio/mpeg">
                                     Your browser does not support the audio element.
                                 </audio>
-                                {{ podcast.summary|safe|truncatewords_html:100 }}
+                                {{ podcast.summary|safe }}
                             </div>
                         </div>
                         <div class="row no-gutters whitesmoke">

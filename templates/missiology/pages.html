@@ -1,117 +1,6 @@
 {% extends 'missiology/base.html' %}
 {% load extras %}
 
-{% block css %}
-    <style type="text/css">
-        #custom-editor {
-            /** Setting height is also important, otherwise editor wont showup**/
-            height: 300px;
-        }
-    </style>
-{% endblock %}
-
-{% block modals %}
-    <!-- SECTION EDITING MODAL -->
-    <div id="section-modal" class="modal" tabindex="-1" role="dialog">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content">
-                <form id="sec-layout-form" method="post" action="">
-                    {% csrf_token %}
-                    <input type="hidden" id="sec-page-id" name="page-id" value="{{ page_id }}"/>
-                    <input type="hidden" id="sec-id" name="sec-id" value=""/>
-                    <input type="hidden" id="sec-order" name="sec-order" value=""/>
-                    <input type="hidden" id="sec-layout-json" name="layout-json" value="{}"/>
-
-                    <input id="sec-num-rows" type="hidden" value="0"/>
-                    <div class="modal-header">
-                        <h5 class="modal-title">Edit Section</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="container">
-                            <div class="row" style="margin-bottom: 20px;">
-                                <div class="col-md-8">
-                                    <div class="form-group">
-                                        <label for="sec-header-text">Header Text</label>
-                                        <input class="form-control" id="sec-header-text" type="text" name="header-text" placeholder="My Section"/>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="sec-header-css">Header CSS</label>
-                                        <input type="text" class="form-control" id="sec-header-css" name="header-css" />
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="sec-header-css">Anchor Name</label>
-                                        <input class="form-control" id="sec-header-name" type="text" name="header-name" placeholder="my_section"/>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label for="sec-show-header">Show Header</label>
-                                        <input class="form-control" id="sec-show-header" type="checkbox" name="show-header">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="sec-full-width">Full Screen Width</label>
-                                        <input class="form-control" id="sec-full-width" type="checkbox" name="full-width">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        <h5>Layout</h5>
-                                        <hr/>
-                                        <div id="sec_layout_alert_box"></div>
-                                        <a href="javascript: add_row();">Add Row</a>
-                                        <div id="sec-layout-box" class="container"></div>
-                                        <div id="sec-col-settings-div" class="col-md-12">
-                                            <!--Column settings populated here via halcyon.js-->
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <div class="float-left">
-                            <button type="button" class="btn btn-primary" onclick="save_section();">Save</button>
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        </div>
-                        <div class="float-right">
-                            <button type="button" class="btn btn-danger" onclick="delete_section();">Delete Section</button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- CUSTOM CONTENT EDITING MODAL -->
-    <div id="content-edit-modal" class="modal" tabindex="-1" role="dialog">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content">
-                <form id="content-edit-form" method="post" action="">
-                    {% csrf_token %}
-                    <div class="modal-header">
-                        <h5 class="modal-title">Edit Custom Content</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body" id="custom-editor-div">
-                        <div id="custom-editor"></div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" onclick="save_custom_edit();">Save</button>
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-{% endblock %}
-
 {% block main %}
     <div class="row no-gutters">
         <div class="col-sm-12">
@@ -123,15 +12,6 @@
                     {% else %}
                         Page not found!
                     {% endif %}
-                    {% if response.is_admin %}
-                        <div class="float-right" style="margin-right: 10px;">
-                        {% if editing %}
-                            <a href="/{{ page.url }}" class="btn btn-light">Stop Editing</a>
-                        {% else %}
-                            <a href="?editing=y" class="btn btn-light">Edit Page</a>
-                        {% endif %}
-                        </div>
-                    {% endif %}
                 </div>
             </div>
         </div>
@@ -141,54 +21,13 @@
         <div class="col-sm-12">
             <!-- SITE SECITONS -->
             {% for section in sections %}
-                <a name="{{ section.name }}"></a>
-                {% if section.show_header or editing %}
-                    <div id="section-header-{{ section.id }}" class="{{ section.header_css_class }} section-header">
-                        {{ section.header_text }}
-                        {% if response.is_admin and editing %}
-                            <div class="d-flex align-items-center" style="font-size: 20px;">
-                                &nbsp;<a class="wlink" href="javascript: edit_section('{{ section.id }}');"><span class="oi oi-cog section-settings"></span></a>
-                                &nbsp;<a class="wlink" href="/{{ page.url }}?editing=y&section={{ section.id }}&move=up"><span class="oi oi-arrow-top"></span></a>
-                                <a class="wlink" href="/{{ page.url }}?editing=y&section={{ section.id }}&move=down"><span class="oi oi-arrow-bottom"></span></a>
-                            </div>
-                        {% endif %}
-                    </div>
-                {% endif %}
-                {% for row in section.rows %}
-                    <div class="{{ row.css }}">
-                        {% for col in row.cols %}
-                            <div id="section-content-{{ col.id }}"
-                                class="col-sm-{{ col.width }} {{ col.css }}"
-                                {% if response.is_admin and editing and not col.is_custom %}
-                                    contenteditable="true"
-                                {% elif response.is_admin and editing and col.is_custom %}
-                                    onclick="show_custom_editor({{ col.id }});"
-                                {% endif %}
-                            >
-                                {{ col.html|safe }}
-                            </div>
-                        {% endfor %}
-                    </div>
-                {% endfor %}
+                {{ section.html }}
             {% endfor %}
         </div>
     </div>
 
-    {% if response.is_admin and editing %}
-        <div class="container-fluid">
-            <h1>Admin Tools</h1>
-            <a href="javascript: new_section({{ sections|length }});">New Section</a> | <a href="/admin/home/sitepage/" target="_blank">Manage Pages</a>
-        </div>
-    {% endif %}
-
 {% endblock %}
 
 {% block js %}
-    {% if response.is_admin %}
-        <script src="/static/js/ckeditor/ckeditor.js"></script>
-        <script src="/static/js/jQuery.base64.js"></script>
-        <script src="/static/js/ace/ace.js"></script>
-        <script type="javascript">
-        </script>
-    {% endif %}
+
 {% endblock %}

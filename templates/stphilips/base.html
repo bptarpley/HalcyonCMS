@@ -178,6 +178,22 @@
     {% endif %}
     {% block main %}{% endblock %}
 
+    {% if response.is_admin %}
+        <div class="row no-gutters stpec-header-light-blue section-header">
+            <div class="col-sm-12">
+                Admin Tools
+            </div>
+        </div>
+        <div class="container section-content">
+            {% if editing %}
+                <a href="/{% if page.url != '/' %}{{ page.url }}{% endif %}" class="btn btn-primary">Stop Editing</a><br>
+                <a href="javascript: new_section({{ sections|length }});">New Section</a> | <a href="/admin/home/sitepage/" target="_blank">Manage Pages</a>
+            {% else %}
+                <a href="?editing=y" class="btn btn-primary">Edit Page</a>
+            {% endif %}
+        </div>
+    {% endif %}
+
     <div class="container-fluid" style="height: 200px;">
         &nbsp;
     </div>

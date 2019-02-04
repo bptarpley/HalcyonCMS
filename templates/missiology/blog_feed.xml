@@ -1,0 +1,35 @@
+{% load extras %}
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+  <channel>
+    <title>{{ title }}</title>
+    <description>{{ description }}</description>
+    <link>{{ link }}</link>
+    <category>{{ category }}</category>
+    <copyright>{{ copyright }}</copyright>
+    <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
+    <language>en-us</language>
+    <lastBuildDate>{{ last_build|feeddate }}</lastBuildDate>
+    <managingEditor>{{ editor }}</managingEditor>
+    <pubDate>{{ last_build|feeddate }}</pubDate>
+    <webMaster>{{ webmaster }}</webMaster>
+    <generator>{{ generator }}</generator>
+    <image>
+      <url>{{ image }}</url>
+      <title>{{ title }}</title>
+      <link>{{ link }}</link>
+      <description>{{ description }}</description>
+      <width>68</width>
+      <height>55</height>
+    </image>
+    {% for item in items %}
+        <item>
+          <title>{{ item.title }}</title>
+          <description>{{ item.content|truncatewords_html:50 }}</description>
+          <link>{{ link }}/{{ item.nice_url }}</link>
+          <category>{% for tag in item.tags.all %}{{ tag.text }}/{% endfor %}</category>
+          <comments>{{ link }}/{{ item.nice_url }}</comments>
+          <pubDate>{{ item.pub_date|feeddate }}</pubDate>
+        </item>
+    {% endfor %}
+  </channel>
+</rss>

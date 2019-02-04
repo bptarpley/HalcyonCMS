@@ -27,6 +27,9 @@ def search_blog(query):
             end = match.start() + settings.SEARCH_CONTEXT_SIZE
             context += full_text[start:end] + "</b> "
 
+        if not context:
+            context = full_text
+
         search_results.append({
             'type': 'blog',
             'title': post.title,
@@ -57,6 +60,9 @@ def search_resources(query):
             end = match.start() + settings.SEARCH_CONTEXT_SIZE
             context += full_text[start:end] + "</b> "
 
+        if not context:
+            context = full_text
+
         search_results.append({
             'type': 'resource',
             'title': resource.title,
@@ -86,6 +92,9 @@ def search_podcasts(query):
                 start = 0
             end = match.start() + settings.SEARCH_CONTEXT_SIZE
             context += full_text[start:end] + "</b> "
+
+        if not context:
+            context = full_text
 
         search_results.append({
             'type': 'resource',
@@ -123,6 +132,7 @@ class Post(models.Model):
     comments = models.ManyToManyField(Comment, blank=True)
     pub_date = models.DateTimeField(auto_now_add=True)
     sticky = models.BooleanField(default=False)
+    featured_image = models.CharField(max_length=255, blank=True, null=True)
 
     def set_tags(self, comma_delimited_tags):
         tag_strings = comma_delimited_tags.split(',')
@@ -174,11 +184,12 @@ class BlogEntry(Post):
 
 class PodCast(Post):
     summary = models.TextField(default='Lorem ipsum')
+    itunes_summary = models.TextField(default='Lorem ipsum')
     guid = models.CharField(max_length=100)
-    duration = models.CharField(max_length=10)
+    duration = models.CharField(max_length=10, blank=True, null=True)
     explicit = models.CharField(max_length=5)
-    url = models.CharField(max_length=255)
-    byte_size = models.IntegerField(default=0)
+    url = models.CharField(max_length=255, blank=True, null=True)
+    byte_size = models.IntegerField(default=0, blank=True, null=True)
     published = models.BooleanField(default=False)
 
     def set_duration(self, seconds):

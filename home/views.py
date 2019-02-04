@@ -18,7 +18,7 @@ import traceback
 
 
 def index(request):
-    res = SiteResponse(request.user)
+    res = SiteResponse(request)
 
     page, sections, editing, res = process_CMS(request, res, '/')
 
@@ -64,7 +64,7 @@ def index(request):
 
 
 def pages(request, nice_url='/'):
-    res = SiteResponse(request.user)
+    res = SiteResponse(request)
 
     page, sections, editing, res = process_CMS(request, res, nice_url)
 
@@ -81,7 +81,7 @@ def pages(request, nice_url='/'):
 
 
 def search(request):
-    res = SiteResponse(request.user)
+    res = SiteResponse(request)
     results = []
 
     if 'q' in request.GET:
@@ -107,7 +107,7 @@ def search(request):
 
 
 def login(request):
-    res = SiteResponse(request.user)
+    res = SiteResponse(request)
     next_url = '/'
     user = None
 
@@ -137,7 +137,7 @@ def login(request):
 
 
 def register(request):
-    res = SiteResponse(request.user)
+    res = SiteResponse(request)
     next_url = '/'
     new_user = True
     if 'next' in request.GET:
@@ -159,8 +159,8 @@ def register(request):
     }
     is_admin = request.user.is_superuser
 
-    if is_admin and 'impersonate' in request.GET:
-        user = User.objects.get(id=_clean(request.GET, 'impersonate'))
+    if is_admin and 'impersonate-username' in request.GET:
+        user = User.objects.get(username=_clean(request.GET, 'impersonate-username'))
         new_user = False
 
     elif is_admin and 'create' in request.GET:

@@ -7,17 +7,20 @@ from django.conf import settings
 from django.template import loader, Context
 from django.contrib.auth.models import User
 from .models import *
+from home.views import process_CMS
 from home import SiteResponse
 
 
 def index(request):
-    res = SiteResponse(request.user)
+    res = SiteResponse(request)
     is_admin = False
     can_blog = False
     if request.user.is_authenticated:
         is_admin = request.user.is_superuser
         user = User.objects.get(id=request.user.id)
         can_blog = user.profile.can_blog
+
+    page, sections, editing, res = process_CMS(request, res, '/bibliography')
 
     return render(
         request,
@@ -26,13 +29,16 @@ def index(request):
             'page_id': 40,
             'response': res,
             'is_admin': is_admin,
-            'can_blog': can_blog
+            'can_blog': can_blog,
+            'page': page,
+            'sections': sections,
+            'editing': editing
         }
     )
 
 
 def source_detail(request):
-    res = SiteResponse(request.user)
+    res = SiteResponse(request)
     source = None
 
     if request.method == 'GET':

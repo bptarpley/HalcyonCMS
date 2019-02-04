@@ -37,6 +37,10 @@
                     </div>
                 </div>
                 <div class="form-group">
+                    <label for="itunes-summary-box">iTunes Summary</label>
+                    <textarea id="itunes-summary-box" name="itunes-summary" class="form-control">{{ podcast.itunes_summary }}</textarea>
+                </div>
+                <div class="form-group">
                     <input type="text" class="form-control" id="url-box" name="url" {% if podcast.url %}value="{{ podcast.url }}{% endif %}"><button type="button" onclick="browse_server();">Browse</button>
                 </div>
                 <div class="form-group">
@@ -72,7 +76,7 @@
                     <a class="btn" href="/podcast">Cancel</a>
                     <button type="button" class="btn btn-primary" id="save-button" onclick="save_podcast();">Save</button>
                     {% if podcast.id != 'new' %}
-                        <div class="float-right"><a class="btn" href="?post-id={{ podcast.id }}&delete=y"><span class="oi oi-trash"></span></a></div>
+                        <div class="float-right"><a class="btn" href="?podcast-id={{ podcast.id }}&delete=y"><span class="oi oi-trash"></span></a></div>
                     {% endif %}
                 </div>
                 <input type="hidden" id="preview_url-box">

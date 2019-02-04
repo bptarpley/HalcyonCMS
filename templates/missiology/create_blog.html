@@ -69,6 +69,10 @@
                     </div>
                 </div>
                 <div class="form-group">
+                    <label for="featured-img-box">Featured Image</label>
+                    <input type="text" class="form-control" id="featured-img-box" name="featured-img" {% if blog_post.featured_image %}value="{{ blog_post.featured_image }}{% endif %}"><button type="button" onclick="browse_server();">Browse</button>
+                </div>
+                <div class="form-group">
                     <label for="datetime-picker">Publication Date & Time</label>
                     <div class="input-group date" id="datetime-picker" data-target-input="nearest">
                         <input type="text" class="form-control datetimepicker-input" name="pub-date" data-target="#datetime-picker"/>
@@ -136,6 +140,11 @@
                 nice_url_changed($(this).val());
             });
         });
+
+        function browse_server() {
+            window.open('/admin/filebrowser/browse/?pop=1&langCode=en', 'featured-img-box');
+            return false;
+        }
 
         function toggle_editor() {
             let editor_div = $('#editor-div');
